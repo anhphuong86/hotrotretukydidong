@@ -4,11 +4,27 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Vòng Tay Yêu Thương: Hỗ Trợ Trẻ Em</title>
+    <meta name="description" content="Nền tảng cung cấp kiến thức, công cụ sàng lọc và danh bạ chuyên gia uy tín, đồng hành cùng gia đình có trẻ em rối loạn phát triển tại Việt Nam.">
+    
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Schema.org for SEO -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Organization",
+      "name": "Vòng Tay Yêu Thương",
+      "url": "https://example.com",
+      "logo": "https://placehold.co/600x60/4A90E2/FFFFFF?text=Vòng+Tay+Yêu+Thương",
+      "description": "Hỗ trợ chuyên sâu và kết nối tin cậy cho gia đình có trẻ em rối loạn phát triển tại Việt Nam.",
+      "nonprofitStatus": "https://schema.org/Nonprofit501c3"
+    }
+    </script>
+
     <style>
         html { scroll-behavior: smooth; }
         body {
@@ -148,13 +164,13 @@
     <main class="p-4 md:p-10 pb-24">
         <!-- Dynamic Header for section titles, hidden on home -->
         <div id="section-header" class="mb-6 hidden">
-             <h2 id="section-title" class="text-2xl md:text-4xl font-extrabold text-gray-800"></h2>
+             <h1 id="section-title" class="text-2xl md:text-4xl font-extrabold text-gray-800"></h1>
         </div>
 
         <section id="home" class="content-section active">
             <div class="hero-bg rounded-2xl p-8 md:p-16 text-center flex flex-col items-center justify-center min-h-[calc(100vh-8rem)] md:min-h-[calc(100vh-5rem)]">
                 <div class="bg-white/80 backdrop-blur-sm p-8 rounded-xl">
-                    <h2 class="text-3xl md:text-5xl font-extrabold text-gray-800 mb-4 leading-tight">Cùng con bước đi trên hành trình đặc biệt.</h2>
+                    <h1 class="text-3xl md:text-5xl font-extrabold text-gray-800 mb-4 leading-tight">Cùng con bước đi trên hành trình đặc biệt.</h1>
                     <p class="text-base md:text-xl text-gray-600 max-w-3xl mx-auto mb-8 leading-relaxed">Chúng tôi biết rằng tình yêu thương của bạn dành cho con là vô bờ bến. Hãy để chúng tôi tiếp thêm sức mạnh cho tình yêu đó bằng những kiến thức chuyên sâu, sự kết nối tin cậy và sự sẻ chia từ những người có cùng hoàn cảnh.</p>
                     <button id="start-survey-btn" class="bg-primary text-white font-bold py-3 px-8 rounded-full hover:bg-opacity-90 transition-colors shadow-lg text-lg transform hover:scale-105">
                         Bắt đầu Sàng lọc cho bé
@@ -181,7 +197,7 @@
 
         <section id="directory" class="content-section">
              <p class="max-w-3xl mx-auto text-base text-gray-500 mb-8">Tìm kiếm bệnh viện, trung tâm can thiệp và trường học trên khắp 63 tỉnh thành.</p>
-            <div class="bg-white p-4 rounded-2xl mb-6 sticky top-4 z-40 border">
+            <div class="bg-white p-4 rounded-2xl mb-6">
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <input type="text" id="search-input" placeholder="Tìm theo tên cơ sở..." class="form-input col-span-1 sm:col-span-2">
                     <select id="region-filter" class="form-select"><option value="all">Toàn quốc</option></select>
@@ -223,14 +239,14 @@
         <section id="knowledge" class="content-section">
             <div class="max-w-5xl mx-auto">
                 <div class="border-b border-gray-200 mb-8">
-                    <nav class="-mb-px flex space-x-2 sm:space-x-6 overflow-x-auto" aria-label="Tabs">
-                        <button class="tab-btn active whitespace-nowrap py-4 px-1 text-sm sm:text-lg font-medium text-gray-500" data-tab="disorders">Tìm Hiểu Rối Loạn</button>
-                        <button class="tab-btn whitespace-nowrap py-4 px-1 text-sm sm:text-lg font-medium text-gray-500" data-tab="interventions">Phương Pháp Can Thiệp</button>
-                        <button class="tab-btn whitespace-nowrap py-4 px-1 text-sm sm:text-lg font-medium text-gray-500" data-tab="costs">Chi Phí & Chính Sách</button>
-                        <button class="tab-btn whitespace-nowrap py-4 px-1 text-sm sm:text-lg font-medium text-gray-500" data-tab="inspiration">Truyền Cảm Hứng</button>
+                    <nav class="-mb-px flex space-x-2 sm:space-x-6 overflow-x-auto" aria-label="Tabs" role="tablist">
+                        <button class="tab-btn active whitespace-nowrap py-4 px-1 text-sm sm:text-lg font-medium text-gray-500" role="tab" aria-selected="true" aria-controls="tab-disorders" data-tab="disorders">Tìm Hiểu Rối Loạn</button>
+                        <button class="tab-btn whitespace-nowrap py-4 px-1 text-sm sm:text-lg font-medium text-gray-500" role="tab" aria-selected="false" aria-controls="tab-interventions" data-tab="interventions" tabindex="-1">Phương Pháp Can Thiệp</button>
+                        <button class="tab-btn whitespace-nowrap py-4 px-1 text-sm sm:text-lg font-medium text-gray-500" role="tab" aria-selected="false" aria-controls="tab-costs" data-tab="costs" tabindex="-1">Chi Phí & Chính Sách</button>
+                        <button class="tab-btn whitespace-nowrap py-4 px-1 text-sm sm:text-lg font-medium text-gray-500" role="tab" aria-selected="false" aria-controls="tab-inspiration" data-tab="inspiration" tabindex="-1">Truyền Cảm Hứng</button>
                     </nav>
                 </div>
-                <div id="tab-disorders" class="tab-content active">
+                <div id="tab-disorders" class="tab-content active" role="tabpanel" aria-labelledby="tab-btn-disorders">
                     <div class="flex flex-col sm:flex-row gap-4 mb-8">
                         <button class="disorder-btn p-4 border-gray-200 rounded-2xl flex-1 text-center active" data-disorder="asd"><span class="text-3xl">🧩</span><span class="block font-semibold mt-2 text-base">Tự Kỷ (ASD)</span></button>
                         <button class="disorder-btn p-4 border-gray-200 rounded-2xl flex-1 text-center" data-disorder="adhd"><span class="text-3xl">💨</span><span class="block font-semibold mt-2 text-base">Tăng Động (ADHD)</span></button>
@@ -238,16 +254,16 @@
                     </div>
                     <div id="disorderContent" class="bg-white p-6 md:p-10 rounded-2xl card"></div>
                 </div>
-                <div id="tab-interventions" class="tab-content"><div class="space-y-8" id="intervention-list"></div></div>
-                <div id="tab-costs" class="tab-content"><div class="bg-white p-6 rounded-2xl card mb-12"><h3 class="text-xl font-bold text-gray-800 mb-6 text-center">Khoảng Trống giữa Chi Phí và Hỗ Trợ</h3><div class="chart-container"><canvas id="cost-chart"></canvas></div><div class="mt-8 text-center text-gray-600 max-w-2xl mx-auto"><p>Biểu đồ trên cho thấy một khoảng cách đáng kể giữa chi phí thực tế cho các dịch vụ can thiệp chuyên sâu và mức trợ cấp xã hội hàng tháng.</p></div></div><div class="bg-white p-6 rounded-2xl card"><h3 class="font-bold text-xl mb-6 text-gray-800 text-center">Khung Chính Sách Quốc Gia</h3><div class="overflow-x-auto"><table class="w-full text-sm text-left"><thead class="text-xs text-gray-700 uppercase bg-gray-50"><tr><th class="px-6 py-3">Văn bản/Chương trình</th><th class="px-6 py-3">Nội dung chính</th></tr></thead><tbody><tr class="border-b"><td class="px-6 py-4 font-medium">QĐ 1929/QĐ-TTg (2020)</td><td class="px-6 py-4 text-gray-600">Phê duyệt chương trình trợ giúp xã hội và PHCN cho người tâm thần, trẻ tự kỷ dựa vào cộng đồng.</td></tr><tr class="border-b"><td class="px-6 py-4 font-medium">QĐ 4485/QĐ-BYT (2021)</td><td class="px-6 py-4 text-gray-600">Đặt mục tiêu cụ thể: 70% trẻ dưới 6 tuổi được sàng lọc tự kỷ, đào tạo nhân lực.</td></tr><tr><td class="px-6 py-4 font-medium">QĐ 1591/QĐ-TTg (2023)</td><td class="px-6 py-4 text-gray-600">Phê duyệt chương trình chăm sóc sức khỏe tâm thần trẻ em, nhấn mạnh dịch vụ toàn diện, liên tục.</td></tr></tbody></table></div></div></div>
-                <div id="tab-inspiration" class="tab-content">
+                <div id="tab-interventions" class="tab-content" role="tabpanel" aria-labelledby="tab-btn-interventions"><div class="space-y-8" id="intervention-list"></div></div>
+                <div id="tab-costs" class="tab-content" role="tabpanel" aria-labelledby="tab-btn-costs"><div class="bg-white p-6 rounded-2xl card mb-12"><h3 class="text-xl font-bold text-gray-800 mb-6 text-center">Khoảng Trống giữa Chi Phí và Hỗ Trợ</h3><div class="chart-container"><canvas id="cost-chart" role="img" aria-label="Biểu đồ cột so sánh chi phí can thiệp và mức hỗ trợ của nhà nước."></canvas></div><div class="mt-8 text-center text-gray-600 max-w-2xl mx-auto"><p>Biểu đồ trên cho thấy một khoảng cách đáng kể giữa chi phí thực tế cho các dịch vụ can thiệp chuyên sâu và mức trợ cấp xã hội hàng tháng.</p></div></div><div class="bg-white p-6 rounded-2xl card"><h3 class="font-bold text-xl mb-6 text-gray-800 text-center">Khung Chính Sách Quốc Gia</h3><div class="overflow-x-auto"><table class="w-full text-sm text-left"><thead class="text-xs text-gray-700 uppercase bg-gray-50"><tr><th class="px-6 py-3">Văn bản/Chương trình</th><th class="px-6 py-3">Nội dung chính</th></tr></thead><tbody><tr class="border-b"><td class="px-6 py-4 font-medium">QĐ 1929/QĐ-TTg (2020)</td><td class="px-6 py-4 text-gray-600">Phê duyệt chương trình trợ giúp xã hội và PHCN cho người tâm thần, trẻ tự kỷ dựa vào cộng đồng.</td></tr><tr class="border-b"><td class="px-6 py-4 font-medium">QĐ 4485/QĐ-BYT (2021)</td><td class="px-6 py-4 text-gray-600">Đặt mục tiêu cụ thể: 70% trẻ dưới 6 tuổi được sàng lọc tự kỷ, đào tạo nhân lực.</td></tr><tr><td class="px-6 py-4 font-medium">QĐ 1591/QĐ-TTg (2023)</td><td class="px-6 py-4 text-gray-600">Phê duyệt chương trình chăm sóc sức khỏe tâm thần trẻ em, nhấn mạnh dịch vụ toàn diện, liên tục.</td></tr></tbody></table></div></div></div>
+                <div id="tab-inspiration" class="tab-content" role="tabpanel" aria-labelledby="tab-btn-inspiration">
                     <div class="space-y-12">
                          <div class="bg-white p-6 rounded-2xl card">
                             <h3 class="font-bold text-2xl mb-6 text-gray-800">Những Câu Chuyện Vượt Lên Nghịch Cảnh</h3>
                             <div id="story-tabs" class="flex flex-wrap gap-3 mb-6 border-b pb-4"><button class="story-tab active" data-story="autism">Tự Kỷ</button><button class="story-tab" data-story="depression">Vượt Qua Trầm Cảm</button><button class="story-tab" data-story="disability">Vượt Lên Nghịch Cảnh</button></div>
-                            <div id="story-autism" class="story-content active grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"><div class="text-center"><img src="https://placehold.co/400x400/E8EAE6/574F44?text=Temple+Grandin" alt="Image of Dr. Temple Grandin" class="w-24 h-24 rounded-full mx-auto mb-4 object-cover shadow-lg"><h4 class="font-bold text-lg">Dr. Temple Grandin</h4><p class="text-sm text-primary font-semibold">Nhà khoa học, Giáo sư</p><p class="text-xs text-gray-500 mt-2">Là một trong những nhà khoa học hàng đầu về hành vi động vật và là người tiên phong trong việc thiết kế chuồng trại nhân đạo.</p></div><div class="text-center"><img src="https://placehold.co/400x400/E8EAE6/574F44?text=Satoshi+Tajiri" alt="Image of Satoshi Tajiri" class="w-24 h-24 rounded-full mx-auto mb-4 object-cover shadow-lg"><h4 class="font-bold text-lg">Satoshi Tajiri</h4><p class="text-sm text-primary font-semibold">Nhà sáng tạo Pokémon</p><p class="text-xs text-gray-500 mt-2">Niềm đam mê mãnh liệt với việc sưu tầm côn trùng từ thời thơ ấu chính là nguồn cảm hứng để ông tạo ra thế giới Pokémon.</p></div><div class="text-center"><img src="https://placehold.co/400x400/E8EAE6/574F44?text=Anthony+Hopkins" alt="Image of Sir Anthony Hopkins" class="w-24 h-24 rounded-full mx-auto mb-4 object-cover shadow-lg"><h4 class="font-bold text-lg">Sir Anthony Hopkins</h4><p class="text-sm text-primary font-semibold">Diễn viên đoạt giải Oscar</p><p class="text-xs text-gray-500 mt-2">Được chẩn đoán mắc hội chứng Asperger, ông chia sẻ rằng góc nhìn khác biệt này đã giúp ông phân tích nhân vật một cách sâu sắc.</p></div></div>
-                            <div id="story-depression" class="story-content grid-cols-1 md:grid-cols-2 gap-8"><div class="text-center"><img src="https://placehold.co/400x400/E8EAE6/574F44?text=J.K.+Rowling" alt="Image of J.K. Rowling" class="w-24 h-24 rounded-full mx-auto mb-4 object-cover shadow-lg"><h4 class="font-bold text-lg">J.K. Rowling</h4><p class="text-sm text-primary font-semibold">Tác giả Harry Potter</p><p class="text-xs text-gray-500 mt-2">Bà đã biến những cảm xúc tuyệt vọng trong giai đoạn trầm cảm thành hình tượng Giám Ngục Azkaban, truyền cảm hứng cho hàng triệu người.</p></div><div class="text-center"><img src="https://placehold.co/400x400/E8EAE6/574F44?text=The+Rock" alt="Image of Dwayne Johnson" class="w-24 h-24 rounded-full mx-auto mb-4 object-cover shadow-lg"><h4 class="font-bold text-lg">Dwayne Johnson</h4><p class="text-sm text-primary font-semibold">Diễn viên, Đô vật</p><p class="text-xs text-gray-500 mt-2">Ông đã công khai về cuộc chiến của mình với trầm cảm, khuyến khích mọi người, đặc biệt là nam giới, hãy mạnh dạn tìm kiếm sự giúp đỡ.</p></div></div>
-                            <div id="story-disability" class="story-content grid-cols-1 md:grid-cols-2 gap-8"><div class="text-center"><img src="https://placehold.co/400x400/E8EAE6/574F44?text=Christy+Brown" alt="Image of Christy Brown" class="w-24 h-24 rounded-full mx-auto mb-4 object-cover shadow-lg"><h4 class="font-bold text-lg">Christy Brown</h4><p class="text-sm text-primary font-semibold">Nhà văn, Họa sĩ</p><p class="text-xs text-gray-500 mt-2">Bị bại não nặng, ông đã dùng chính bàn chân trái của mình để viết và vẽ, tạo nên cuốn tự truyện "Bàn Chân Trái Của Tôi".</p></div><div class="text-center"><img src="https://placehold.co/400x400/E8EAE6/574F44?text=Nguyen+Ngoc+Ky" alt="Image of Nguyễn Ngọc Ký" class="w-24 h-24 rounded-full mx-auto mb-4 object-cover shadow-lg"><h4 class="font-bold text-lg">Thầy giáo Nguyễn Ngọc Ký</h4><p class="text-sm text-primary font-semibold">Nhà giáo Ưu tú</p><p class="text-xs text-gray-500 mt-2">Bị liệt cả hai tay từ năm 4 tuổi, thầy đã dùng đôi chân của mình để viết nên một huyền thoại và truyền cảm hứng cho bao thế hệ.</p></div></div>
+                            <div id="story-autism" class="story-content active grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"><div class="text-center"><img loading="lazy" src="https://placehold.co/400x400/E8EAE6/574F44?text=Temple+Grandin" alt="Image of Dr. Temple Grandin" class="w-24 h-24 rounded-full mx-auto mb-4 object-cover shadow-lg"><h4 class="font-bold text-lg">Dr. Temple Grandin</h4><p class="text-sm text-primary font-semibold">Nhà khoa học, Giáo sư</p><p class="text-xs text-gray-500 mt-2">Là một trong những nhà khoa học hàng đầu về hành vi động vật và là người tiên phong trong việc thiết kế chuồng trại nhân đạo.</p></div><div class="text-center"><img loading="lazy" src="https://placehold.co/400x400/E8EAE6/574F44?text=Satoshi+Tajiri" alt="Image of Satoshi Tajiri" class="w-24 h-24 rounded-full mx-auto mb-4 object-cover shadow-lg"><h4 class="font-bold text-lg">Satoshi Tajiri</h4><p class="text-sm text-primary font-semibold">Nhà sáng tạo Pokémon</p><p class="text-xs text-gray-500 mt-2">Niềm đam mê mãnh liệt với việc sưu tầm côn trùng từ thời thơ ấu chính là nguồn cảm hứng để ông tạo ra thế giới Pokémon.</p></div><div class="text-center"><img loading="lazy" src="https://placehold.co/400x400/E8EAE6/574F44?text=Anthony+Hopkins" alt="Image of Sir Anthony Hopkins" class="w-24 h-24 rounded-full mx-auto mb-4 object-cover shadow-lg"><h4 class="font-bold text-lg">Sir Anthony Hopkins</h4><p class="text-sm text-primary font-semibold">Diễn viên đoạt giải Oscar</p><p class="text-xs text-gray-500 mt-2">Được chẩn đoán mắc hội chứng Asperger, ông chia sẻ rằng góc nhìn khác biệt này đã giúp ông phân tích nhân vật một cách sâu sắc.</p></div></div>
+                            <div id="story-depression" class="story-content grid-cols-1 md:grid-cols-2 gap-8"><div class="text-center"><img loading="lazy" src="https://placehold.co/400x400/E8EAE6/574F44?text=J.K.+Rowling" alt="Image of J.K. Rowling" class="w-24 h-24 rounded-full mx-auto mb-4 object-cover shadow-lg"><h4 class="font-bold text-lg">J.K. Rowling</h4><p class="text-sm text-primary font-semibold">Tác giả Harry Potter</p><p class="text-xs text-gray-500 mt-2">Bà đã biến những cảm xúc tuyệt vọng trong giai đoạn trầm cảm thành hình tượng Giám Ngục Azkaban, truyền cảm hứng cho hàng triệu người.</p></div><div class="text-center"><img loading="lazy" src="https://placehold.co/400x400/E8EAE6/574F44?text=The+Rock" alt="Image of Dwayne Johnson" class="w-24 h-24 rounded-full mx-auto mb-4 object-cover shadow-lg"><h4 class="font-bold text-lg">Dwayne Johnson</h4><p class="text-sm text-primary font-semibold">Diễn viên, Đô vật</p><p class="text-xs text-gray-500 mt-2">Ông đã công khai về cuộc chiến của mình với trầm cảm, khuyến khích mọi người, đặc biệt là nam giới, hãy mạnh dạn tìm kiếm sự giúp đỡ.</p></div></div>
+                            <div id="story-disability" class="story-content grid-cols-1 md:grid-cols-2 gap-8"><div class="text-center"><img loading="lazy" src="https://placehold.co/400x400/E8EAE6/574F44?text=Christy+Brown" alt="Image of Christy Brown" class="w-24 h-24 rounded-full mx-auto mb-4 object-cover shadow-lg"><h4 class="font-bold text-lg">Christy Brown</h4><p class="text-sm text-primary font-semibold">Nhà văn, Họa sĩ</p><p class="text-xs text-gray-500 mt-2">Bị bại não nặng, ông đã dùng chính bàn chân trái của mình để viết và vẽ, tạo nên cuốn tự truyện "Bàn Chân Trái Của Tôi".</p></div><div class="text-center"><img loading="lazy" src="https://placehold.co/400x400/E8EAE6/574F44?text=Nguyen+Ngoc+Ky" alt="Image of Nguyễn Ngọc Ký" class="w-24 h-24 rounded-full mx-auto mb-4 object-cover shadow-lg"><h4 class="font-bold text-lg">Thầy giáo Nguyễn Ngọc Ký</h4><p class="text-sm text-primary font-semibold">Nhà giáo Ưu tú</p><p class="text-xs text-gray-500 mt-2">Bị liệt cả hai tay từ năm 4 tuổi, thầy đã dùng đôi chân của mình để viết nên một huyền thoại và truyền cảm hứng cho bao thế hệ.</p></div></div>
                         </div>
                         <div class="bg-white p-8 rounded-2xl card text-center">
                             <h3 class="font-bold text-2xl mb-6 text-gray-800">Tương Lai & Hy Vọng</h3>
@@ -260,7 +276,8 @@
                         </div>
                     </div>
                 </div>
-            </section>
+            </div>
+        </section>
     </main>
 
     <div id="toast" class="toast"></div>
@@ -802,7 +819,6 @@
 
             function playVideo(videoId) {
                 videoPlayerContainer.innerHTML = `<div class="video-container shadow-lg"><iframe src="https://www.youtube.com/embed/${videoId}?autoplay=1" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe></div>`;
-                videoPlayerContainer.scrollIntoView({ behavior: 'smooth', block: 'center' });
             }
 
             videoListContainer.innerHTML = videos.map(video => `

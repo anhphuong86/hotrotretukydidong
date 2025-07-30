@@ -95,6 +95,14 @@
              background-size: cover;
              background-position: center;
         }
+        .story-tab {
+            padding: 0.5rem 1rem; border-radius: 9999px; font-weight: 600;
+            cursor: pointer; transition: all 0.3s; border: 2px solid transparent;
+        }
+        .story-tab.active { background-color: #4A90E2; color: white; }
+        .story-tab:not(.active) { background-color: #E5E7EB; color: #374151; }
+        .story-content { display: none; }
+        .story-content.active { display: grid; animation: fadeIn 0.5s; }
     </style>
 </head>
 <body class="antialiased">
@@ -126,7 +134,7 @@
                 </div>
                 <form id="comprehensive-survey-form" class="bg-white p-6 md:p-10 rounded-2xl card">
                     <div id="survey-content-container"></div>
-                    <div id="form-error-message" class="hidden bg-red-100 border-l-4 border-red-500 text-red-700 p-4 rounded-r-lg my-6"></div>
+                    <div id="form-error-message" class="hidden bg-red-100 border-l-4 border-red-500 text-red-700 p-4 rounded-md my-6"></div>
                     <button type="submit" class="w-full mt-6 bg-primary text-white font-bold py-3 px-6 rounded-lg hover:bg-opacity-80 transition-colors shadow-lg hover:shadow-xl">Hoàn Thành & Xem Phân tích</button>
                 </form>
                 <div id="survey-results" class="mt-10 hidden"></div>
@@ -176,6 +184,7 @@
                         <button class="tab-btn active whitespace-nowrap py-4 px-1 text-sm sm:text-lg font-medium text-gray-500" data-tab="disorders">Tìm Hiểu Rối Loạn</button>
                         <button class="tab-btn whitespace-nowrap py-4 px-1 text-sm sm:text-lg font-medium text-gray-500" data-tab="interventions">Phương Pháp Can Thiệp</button>
                         <button class="tab-btn whitespace-nowrap py-4 px-1 text-sm sm:text-lg font-medium text-gray-500" data-tab="costs">Chi Phí & Chính Sách</button>
+                        <button class="tab-btn whitespace-nowrap py-4 px-1 text-sm sm:text-lg font-medium text-gray-500" data-tab="inspiration">Truyền Cảm Hứng</button>
                     </nav>
                 </div>
                 <div id="tab-disorders" class="tab-content active">
@@ -188,40 +197,36 @@
                 </div>
                 <div id="tab-interventions" class="tab-content"><div class="space-y-8" id="intervention-list"></div></div>
                 <div id="tab-costs" class="tab-content"><div class="bg-white p-6 rounded-2xl card mb-12"><h3 class="text-xl font-bold text-gray-800 mb-6 text-center">Khoảng Trống giữa Chi Phí và Hỗ Trợ</h3><div class="chart-container"><canvas id="cost-chart"></canvas></div><div class="mt-8 text-center text-gray-600 max-w-2xl mx-auto"><p>Biểu đồ trên cho thấy một khoảng cách đáng kể giữa chi phí thực tế cho các dịch vụ can thiệp chuyên sâu và mức trợ cấp xã hội hàng tháng.</p></div></div><div class="bg-white p-6 rounded-2xl card"><h3 class="font-bold text-xl mb-6 text-gray-800 text-center">Khung Chính Sách Quốc Gia</h3><div class="overflow-x-auto"><table class="w-full text-sm text-left"><thead class="text-xs text-gray-700 uppercase bg-gray-50"><tr><th class="px-6 py-3">Văn bản/Chương trình</th><th class="px-6 py-3">Nội dung chính</th></tr></thead><tbody><tr class="border-b"><td class="px-6 py-4 font-medium">QĐ 1929/QĐ-TTg (2020)</td><td class="px-6 py-4 text-gray-600">Phê duyệt chương trình trợ giúp xã hội và PHCN cho người tâm thần, trẻ tự kỷ dựa vào cộng đồng.</td></tr><tr class="border-b"><td class="px-6 py-4 font-medium">QĐ 4485/QĐ-BYT (2021)</td><td class="px-6 py-4 text-gray-600">Đặt mục tiêu cụ thể: 70% trẻ dưới 6 tuổi được sàng lọc tự kỷ, đào tạo nhân lực.</td></tr><tr><td class="px-6 py-4 font-medium">QĐ 1591/QĐ-TTg (2023)</td><td class="px-6 py-4 text-gray-600">Phê duyệt chương trình chăm sóc sức khỏe tâm thần trẻ em, nhấn mạnh dịch vụ toàn diện, liên tục.</td></tr></tbody></table></div></div></div>
-            </div>
-        </section>
-
-        <section id="inspiration" class="content-section">
-            <div class="max-w-5xl mx-auto">
-                <div class="space-y-12">
-                     <div class="bg-white p-6 rounded-2xl card">
-                        <h3 class="font-bold text-2xl mb-6 text-gray-800">Những Câu Chuyện Vượt Lên Nghịch Cảnh</h3>
-                        <div id="story-tabs" class="flex flex-wrap gap-3 mb-6 border-b pb-4"><button class="story-tab active" data-story="autism">Tự Kỷ</button><button class="story-tab" data-story="depression">Vượt Qua Trầm Cảm</button><button class="story-tab" data-story="disability">Vượt Lên Nghịch Cảnh</button></div>
-                        <div id="story-autism" class="story-content active grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"><div class="text-center"><img src="https://placehold.co/400x400/E8EAE6/574F44?text=Temple+Grandin" alt="Image of Dr. Temple Grandin" class="w-24 h-24 rounded-full mx-auto mb-4 object-cover shadow-lg"><h4 class="font-bold text-lg">Dr. Temple Grandin</h4><p class="text-sm text-primary font-semibold">Nhà khoa học, Giáo sư</p><p class="text-xs text-gray-500 mt-2">Là một trong những nhà khoa học hàng đầu về hành vi động vật và là người tiên phong trong việc thiết kế chuồng trại nhân đạo.</p></div><div class="text-center"><img src="https://placehold.co/400x400/E8EAE6/574F44?text=Satoshi+Tajiri" alt="Image of Satoshi Tajiri" class="w-24 h-24 rounded-full mx-auto mb-4 object-cover shadow-lg"><h4 class="font-bold text-lg">Satoshi Tajiri</h4><p class="text-sm text-primary font-semibold">Nhà sáng tạo Pokémon</p><p class="text-xs text-gray-500 mt-2">Niềm đam mê mãnh liệt với việc sưu tầm côn trùng từ thời thơ ấu chính là nguồn cảm hứng để ông tạo ra thế giới Pokémon.</p></div><div class="text-center"><img src="https://placehold.co/400x400/E8EAE6/574F44?text=Anthony+Hopkins" alt="Image of Sir Anthony Hopkins" class="w-24 h-24 rounded-full mx-auto mb-4 object-cover shadow-lg"><h4 class="font-bold text-lg">Sir Anthony Hopkins</h4><p class="text-sm text-primary font-semibold">Diễn viên đoạt giải Oscar</p><p class="text-xs text-gray-500 mt-2">Được chẩn đoán mắc hội chứng Asperger, ông chia sẻ rằng góc nhìn khác biệt này đã giúp ông phân tích nhân vật một cách sâu sắc.</p></div></div>
-                        <div id="story-depression" class="story-content grid-cols-1 md:grid-cols-2 gap-8"><div class="text-center"><img src="https://placehold.co/400x400/E8EAE6/574F44?text=J.K.+Rowling" alt="Image of J.K. Rowling" class="w-24 h-24 rounded-full mx-auto mb-4 object-cover shadow-lg"><h4 class="font-bold text-lg">J.K. Rowling</h4><p class="text-sm text-primary font-semibold">Tác giả Harry Potter</p><p class="text-xs text-gray-500 mt-2">Bà đã biến những cảm xúc tuyệt vọng trong giai đoạn trầm cảm thành hình tượng Giám Ngục Azkaban, truyền cảm hứng cho hàng triệu người.</p></div><div class="text-center"><img src="https://placehold.co/400x400/E8EAE6/574F44?text=The+Rock" alt="Image of Dwayne Johnson" class="w-24 h-24 rounded-full mx-auto mb-4 object-cover shadow-lg"><h4 class="font-bold text-lg">Dwayne Johnson</h4><p class="text-sm text-primary font-semibold">Diễn viên, Đô vật</p><p class="text-xs text-gray-500 mt-2">Ông đã công khai về cuộc chiến của mình với trầm cảm, khuyến khích mọi người, đặc biệt là nam giới, hãy mạnh dạn tìm kiếm sự giúp đỡ.</p></div></div>
-                        <div id="story-disability" class="story-content grid-cols-1 md:grid-cols-2 gap-8"><div class="text-center"><img src="https://placehold.co/400x400/E8EAE6/574F44?text=Christy+Brown" alt="Image of Christy Brown" class="w-24 h-24 rounded-full mx-auto mb-4 object-cover shadow-lg"><h4 class="font-bold text-lg">Christy Brown</h4><p class="text-sm text-primary font-semibold">Nhà văn, Họa sĩ</p><p class="text-xs text-gray-500 mt-2">Bị bại não nặng, ông đã dùng chính bàn chân trái của mình để viết và vẽ, tạo nên cuốn tự truyện "Bàn Chân Trái Của Tôi".</p></div><div class="text-center"><img src="https://placehold.co/400x400/E8EAE6/574F44?text=Nguyen+Ngoc+Ky" alt="Image of Nguyễn Ngọc Ký" class="w-24 h-24 rounded-full mx-auto mb-4 object-cover shadow-lg"><h4 class="font-bold text-lg">Thầy giáo Nguyễn Ngọc Ký</h4><p class="text-sm text-primary font-semibold">Nhà giáo Ưu tú</p><p class="text-xs text-gray-500 mt-2">Bị liệt cả hai tay từ năm 4 tuổi, thầy đã dùng đôi chân của mình để viết nên một huyền thoại và truyền cảm hứng cho bao thế hệ.</p></div></div>
-                    </div>
-                    <div class="bg-white p-8 rounded-2xl card text-center">
-                        <h3 class="font-bold text-2xl mb-6 text-gray-800">Tương Lai & Hy Vọng</h3>
-                        <p class="text-gray-500 mb-8 text-lg">Những tiến bộ khoa học và công nghệ đang mở ra những hướng đi mới đầy hứa hẹn.</p>
-                        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-                            <div class="bg-secondary p-6 rounded-xl"><div class="text-4xl mb-4">🧬</div><h3 class="font-semibold text-lg mb-2 text-gray-800">Nghiên cứu Di truyền</h3><p class="text-gray-600 text-sm">Mở đường cho chẩn đoán sớm và can thiệp kịp thời trong "giai đoạn vàng".</p></div>
-                            <div class="bg-secondary p-6 rounded-xl"><div class="text-4xl mb-4">🌱</div><h3 class="font-semibold text-lg mb-2 text-gray-800">Liệu pháp Tế bào gốc</h3><p class="text-gray-600 text-sm">Hướng đi đột phá cho các tổn thương não như bại não, cải thiện chức năng vận động.</p></div>
-                            <div class="bg-secondary p-6 rounded-xl"><div class="text-4xl mb-4">🤖</div><h3 class="font-semibold text-lg mb-2 text-gray-800">Công nghệ 4.0</h3><p class="text-gray-600 text-sm">AI và VR tạo ra các công cụ học tập cá nhân hóa, an toàn và hấp dẫn cho trẻ.</p></div>
+                <div id="tab-inspiration" class="tab-content">
+                    <div class="space-y-12">
+                         <div class="bg-white p-6 rounded-2xl card">
+                            <h3 class="font-bold text-2xl mb-6 text-gray-800">Những Câu Chuyện Vượt Lên Nghịch Cảnh</h3>
+                            <div id="story-tabs" class="flex flex-wrap gap-3 mb-6 border-b pb-4"><button class="story-tab active" data-story="autism">Tự Kỷ</button><button class="story-tab" data-story="depression">Vượt Qua Trầm Cảm</button><button class="story-tab" data-story="disability">Vượt Lên Nghịch Cảnh</button></div>
+                            <div id="story-autism" class="story-content active grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"><div class="text-center"><img src="https://placehold.co/400x400/E8EAE6/574F44?text=Temple+Grandin" alt="Image of Dr. Temple Grandin" class="w-24 h-24 rounded-full mx-auto mb-4 object-cover shadow-lg"><h4 class="font-bold text-lg">Dr. Temple Grandin</h4><p class="text-sm text-primary font-semibold">Nhà khoa học, Giáo sư</p><p class="text-xs text-gray-500 mt-2">Là một trong những nhà khoa học hàng đầu về hành vi động vật và là người tiên phong trong việc thiết kế chuồng trại nhân đạo.</p></div><div class="text-center"><img src="https://placehold.co/400x400/E8EAE6/574F44?text=Satoshi+Tajiri" alt="Image of Satoshi Tajiri" class="w-24 h-24 rounded-full mx-auto mb-4 object-cover shadow-lg"><h4 class="font-bold text-lg">Satoshi Tajiri</h4><p class="text-sm text-primary font-semibold">Nhà sáng tạo Pokémon</p><p class="text-xs text-gray-500 mt-2">Niềm đam mê mãnh liệt với việc sưu tầm côn trùng từ thời thơ ấu chính là nguồn cảm hứng để ông tạo ra thế giới Pokémon.</p></div><div class="text-center"><img src="https://placehold.co/400x400/E8EAE6/574F44?text=Anthony+Hopkins" alt="Image of Sir Anthony Hopkins" class="w-24 h-24 rounded-full mx-auto mb-4 object-cover shadow-lg"><h4 class="font-bold text-lg">Sir Anthony Hopkins</h4><p class="text-sm text-primary font-semibold">Diễn viên đoạt giải Oscar</p><p class="text-xs text-gray-500 mt-2">Được chẩn đoán mắc hội chứng Asperger, ông chia sẻ rằng góc nhìn khác biệt này đã giúp ông phân tích nhân vật một cách sâu sắc.</p></div></div>
+                            <div id="story-depression" class="story-content grid-cols-1 md:grid-cols-2 gap-8"><div class="text-center"><img src="https://placehold.co/400x400/E8EAE6/574F44?text=J.K.+Rowling" alt="Image of J.K. Rowling" class="w-24 h-24 rounded-full mx-auto mb-4 object-cover shadow-lg"><h4 class="font-bold text-lg">J.K. Rowling</h4><p class="text-sm text-primary font-semibold">Tác giả Harry Potter</p><p class="text-xs text-gray-500 mt-2">Bà đã biến những cảm xúc tuyệt vọng trong giai đoạn trầm cảm thành hình tượng Giám Ngục Azkaban, truyền cảm hứng cho hàng triệu người.</p></div><div class="text-center"><img src="https://placehold.co/400x400/E8EAE6/574F44?text=The+Rock" alt="Image of Dwayne Johnson" class="w-24 h-24 rounded-full mx-auto mb-4 object-cover shadow-lg"><h4 class="font-bold text-lg">Dwayne Johnson</h4><p class="text-sm text-primary font-semibold">Diễn viên, Đô vật</p><p class="text-xs text-gray-500 mt-2">Ông đã công khai về cuộc chiến của mình với trầm cảm, khuyến khích mọi người, đặc biệt là nam giới, hãy mạnh dạn tìm kiếm sự giúp đỡ.</p></div></div>
+                            <div id="story-disability" class="story-content grid-cols-1 md:grid-cols-2 gap-8"><div class="text-center"><img src="https://placehold.co/400x400/E8EAE6/574F44?text=Christy+Brown" alt="Image of Christy Brown" class="w-24 h-24 rounded-full mx-auto mb-4 object-cover shadow-lg"><h4 class="font-bold text-lg">Christy Brown</h4><p class="text-sm text-primary font-semibold">Nhà văn, Họa sĩ</p><p class="text-xs text-gray-500 mt-2">Bị bại não nặng, ông đã dùng chính bàn chân trái của mình để viết và vẽ, tạo nên cuốn tự truyện "Bàn Chân Trái Của Tôi".</p></div><div class="text-center"><img src="https://placehold.co/400x400/E8EAE6/574F44?text=Nguyen+Ngoc+Ky" alt="Image of Nguyễn Ngọc Ký" class="w-24 h-24 rounded-full mx-auto mb-4 object-cover shadow-lg"><h4 class="font-bold text-lg">Thầy giáo Nguyễn Ngọc Ký</h4><p class="text-sm text-primary font-semibold">Nhà giáo Ưu tú</p><p class="text-xs text-gray-500 mt-2">Bị liệt cả hai tay từ năm 4 tuổi, thầy đã dùng đôi chân của mình để viết nên một huyền thoại và truyền cảm hứng cho bao thế hệ.</p></div></div>
+                        </div>
+                        <div class="bg-white p-8 rounded-2xl card text-center">
+                            <h3 class="font-bold text-2xl mb-6 text-gray-800">Tương Lai & Hy Vọng</h3>
+                            <p class="text-gray-500 mb-8 text-lg">Những tiến bộ khoa học và công nghệ đang mở ra những hướng đi mới đầy hứa hẹn.</p>
+                            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                                <div class="bg-secondary p-6 rounded-xl"><div class="text-4xl mb-4">🧬</div><h3 class="font-semibold text-lg mb-2 text-gray-800">Nghiên cứu Di truyền</h3><p class="text-gray-600 text-sm">Mở đường cho chẩn đoán sớm và can thiệp kịp thời trong "giai đoạn vàng".</p></div>
+                                <div class="bg-secondary p-6 rounded-xl"><div class="text-4xl mb-4">🌱</div><h3 class="font-semibold text-lg mb-2 text-gray-800">Liệu pháp Tế bào gốc</h3><p class="text-gray-600 text-sm">Hướng đi đột phá cho các tổn thương não như bại não, cải thiện chức năng vận động.</p></div>
+                                <div class="bg-secondary p-6 rounded-xl"><div class="text-4xl mb-4">🤖</div><h3 class="font-semibold text-lg mb-2 text-gray-800">Công nghệ 4.0</h3><p class="text-gray-600 text-sm">AI và VR tạo ra các công cụ học tập cá nhân hóa, an toàn và hấp dẫn cho trẻ.</p></div>
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
-        </section>
+            </section>
     </main>
 
-    <nav id="mainNav" class="bottom-nav fixed bottom-0 left-0 right-0 bg-white/95 backdrop-blur-sm border-t border-gray-200 no-print">
+    <nav class="bottom-nav fixed bottom-0 left-0 right-0 bg-white/95 backdrop-blur-sm border-t border-gray-200 no-print">
         <ul class="flex justify-around items-center h-16">
-            <li><a href="#home" class="nav-link flex items-center active"><svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path></svg><span class="nav-text">Trang Chủ</span></a></li>
-            <li><a href="#survey" class="nav-link flex items-center"><svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path></svg><span class="nav-text">Sàng Lọc</span></a></li>
-            <li><a href="#roadmap" class="nav-link flex items-center"><svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 20l-5.447-2.724A1 1 0 013 16.382V7.618a1 1 0 01.553-.894L9 4l6.447 2.724A1 1 0 0116 7.618v8.764a1 1 0 01-.553.894L9 20z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 4v16"></path></svg><span class="nav-text">Lộ Trình</span></a></li>
-            <li><a href="#directory" class="nav-link flex items-center"><svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path></svg><span class="nav-text">Tìm kiếm</span></a></li>
-            <li><a href="#knowledge" class="nav-link flex items-center"><svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path></svg><span class="nav-text">Kiến Thức</span></a></li>
+            <li><a href="#home" class="nav-link flex items-center active" data-title="Vòng Tay Yêu Thương"><svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path></svg><span class="nav-text">Trang Chủ</span></a></li>
+            <li><a href="#survey" class="nav-link flex items-center" data-title="Sàng Lọc & Đánh Giá"><svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path></svg><span class="nav-text">Sàng Lọc</span></a></li>
+            <li><a href="#roadmap" class="nav-link flex items-center" data-title="Lộ Trình Hỗ Trợ"><svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 20l-5.447-2.724A1 1 0 013 16.382V7.618a1 1 0 01.553-.894L9 4l6.447 2.724A1 1 0 0116 7.618v8.764a1 1 0 01-.553.894L9 20z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 4v16"></path></svg><span class="nav-text">Lộ Trình</span></a></li>
+            <li><a href="#directory" class="nav-link flex items-center" data-title="Danh Bạ Chuyên Gia"><svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path></svg><span class="nav-text">Tìm kiếm</span></a></li>
+            <li><a href="#knowledge" class="nav-link flex items-center" data-title="Thư Viện Kiến Thức"><svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path></svg><span class="nav-text">Kiến Thức</span></a></li>
         </ul>
     </nav>
     
@@ -538,9 +543,11 @@
         }
         
         function initSurvey() {
+            const surveyForm = document.getElementById('comprehensive-survey-form');
             const surveyData = appData.comprehensiveSurvey;
             const container = document.getElementById('survey-content-container');
             if (!container || container.childElementCount > 0) return;
+            
             let html = '';
             for (const partKey in surveyData) {
                 const part = surveyData[partKey];
@@ -548,15 +555,16 @@
                 part.questions.forEach((q, index) => {
                     const id = q.id || `${partKey}-q${index}`;
                     const questionText = q.label || q.text;
+                    const isRequired = q.required || partKey === 'partE';
                     if (partKey === 'partE') {
                         html += `<div class="bg-gray-50 p-5 rounded-lg border"><label class="font-semibold text-gray-700 block mb-3">${index + 1}. ${questionText}</label><div class="flex flex-wrap gap-x-6 gap-y-2"><label class="flex items-center space-x-2 cursor-pointer"><input type="radio" name="${id}" value="0" required class="form-radio text-primary focus:ring-primary"><span>Không/Hiếm khi</span></label><label class="flex items-center space-x-2 cursor-pointer"><input type="radio" name="${id}" value="1" class="form-radio text-primary focus:ring-primary"><span>Thỉnh thoảng</span></label><label class="flex items-center space-x-2 cursor-pointer"><input type="radio" name="${id}" value="2" class="form-radio text-primary focus:ring-primary"><span>Thường xuyên</span></label><label class="flex items-center space-x-2 cursor-pointer"><input type="radio" name="${id}" value="3" class="form-radio text-primary focus:ring-primary"><span>Rất thường xuyên</span></label></div></div>`;
                     } else {
-                        html += `<div><label for="${id}" class="font-semibold text-gray-700 block mb-2">${questionText}${q.required ? '<span class="text-red-500 ml-1">*</span>' : ''}</label>`;
+                        html += `<div><label for="${id}" class="font-semibold text-gray-700 block mb-2">${questionText}${isRequired ? '<span class="text-red-500 ml-1">*</span>' : ''}</label>`;
                         switch (q.type) {
-                            case 'text': case 'date': case 'tel': html += `<input type="${q.type}" id="${id}" name="${id}" class="form-input" ${q.required ? 'required' : ''}>`; break;
-                            case 'select': html += `<select id="${id}" name="${id}" class="form-select" ${q.required ? 'required' : ''}><option value="">-- Chọn --</option>${q.options.map(opt => `<option value="${opt}">${opt}</option>`).join('')}</select>`; break;
-                            case 'checkbox': html += `<div class="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-2">${q.options.map(opt => `<label class="flex items-center space-x-2 p-3 bg-gray-50 rounded-md border cursor-pointer hover:bg-gray-100 has-[:checked]:bg-blue-50 has-[:checked]:border-primary"><input type="checkbox" name="${id}" value="${opt}" class="form-checkbox text-primary focus:ring-primary"><span>${opt}</span></label>`).join('')}</div>`; break;
-                            case 'radio': html += `<div class="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-2">${q.options.map(opt => `<label class="flex items-center space-x-2 p-3 bg-gray-50 rounded-md border cursor-pointer hover:bg-gray-100 has-[:checked]:bg-blue-50 has-[:checked]:border-primary"><input type="radio" name="${id}" value="${opt}" ${q.required ? 'required' : ''} class="form-radio text-primary focus:ring-primary"><span>${opt}</span></label>`).join('')}</div>`; break;
+                            case 'text': case 'date': case 'tel': html += `<input type="${q.type}" id="${id}" name="${id}" class="form-input" ${isRequired ? 'required' : ''}>`; break;
+                            case 'select': html += `<select id="${id}" name="${id}" class="form-select" ${isRequired ? 'required' : ''}><option value="">-- Chọn --</option>${q.options.map(opt => `<option value="${opt}">${opt}</option>`).join('')}</select>`; break;
+                            case 'checkbox': html += `<div class="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-2" data-required="${isRequired}" data-group-name="${id}">${q.options.map(opt => `<label class="flex items-center space-x-2 p-3 bg-gray-50 rounded-md border cursor-pointer hover:bg-gray-100 has-[:checked]:bg-blue-50 has-[:checked]:border-primary"><input type="checkbox" name="${id}" value="${opt}" class="form-checkbox text-primary focus:ring-primary"><span>${opt}</span></label>`).join('')}</div>`; break;
+                            case 'radio': html += `<div class="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-2">${q.options.map(opt => `<label class="flex items-center space-x-2 p-3 bg-gray-50 rounded-md border cursor-pointer hover:bg-gray-100 has-[:checked]:bg-blue-50 has-[:checked]:border-primary"><input type="radio" name="${id}" value="${opt}" ${isRequired ? 'required' : ''} class="form-radio text-primary focus:ring-primary"><span>${opt}</span></label>`).join('')}</div>`; break;
                         }
                         html += `</div>`;
                     }
@@ -564,9 +572,65 @@
                 html += `</div></div>`;
             }
             container.innerHTML = html;
-            const surveyForm = document.getElementById('comprehensive-survey-form');
+            
             surveyForm.addEventListener('submit', (e) => {
                 e.preventDefault();
+                const errorMsgEl = document.getElementById('form-error-message');
+                errorMsgEl.classList.add('hidden');
+                let firstInvalidElement = null;
+                let isValid = true;
+
+                // Robust Validation Logic
+                for (const partKey in surveyData) {
+                    for (const [index, q] of surveyData[partKey].questions.entries()) {
+                        const isRequired = q.required || partKey === 'partE';
+                        if (!isRequired) continue;
+
+                        const id = q.id || `${partKey}-q${index}`;
+                        const element = document.querySelector(`[name="${id}"]`);
+                        if (!element) continue;
+
+                        let isQuestionAnswered = false;
+                        if (q.type === 'checkbox') {
+                            if (document.querySelector(`input[name="${id}"]:checked`)) {
+                                isQuestionAnswered = true;
+                            }
+                        } else if (q.type === 'radio' || partKey === 'partE') {
+                            if (document.querySelector(`input[name="${id}"]:checked`)) {
+                                isQuestionAnswered = true;
+                            }
+                        } else { // text, date, tel, select
+                            if (element.value && element.value.trim() !== '') {
+                                isQuestionAnswered = true;
+                            }
+                        }
+
+                        if (!isQuestionAnswered) {
+                            isValid = false;
+                            const questionContainer = element.closest('div.mb-10 > .space-y-6 > div, div.bg-gray-50');
+                            if (questionContainer && !firstInvalidElement) {
+                                firstInvalidElement = questionContainer;
+                            }
+                        }
+                    }
+                }
+
+                if (!isValid) {
+                    errorMsgEl.innerHTML = '<p>Vui lòng trả lời tất cả các câu hỏi bắt buộc để nhận được phân tích chính xác nhất.</p>';
+                    errorMsgEl.classList.remove('hidden');
+                    if (firstInvalidElement) {
+                        firstInvalidElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                        firstInvalidElement.style.transition = 'all 0.3s';
+                        firstInvalidElement.style.outline = '2px solid red';
+                        firstInvalidElement.style.borderRadius = '8px';
+                        setTimeout(() => {
+                            if(firstInvalidElement) firstInvalidElement.style.outline = 'none';
+                        }, 3000);
+                    }
+                    return;
+                }
+
+                // If valid, proceed with generating the report
                 const formData = new FormData(surveyForm);
                 const resultsContainer = document.getElementById('survey-results');
                 const report = getDetailedAnalysis(formData);
@@ -611,23 +675,18 @@
         function initializeApp() {
             const sectionHeader = document.getElementById('section-header');
             const sectionTitle = document.getElementById('section-title');
-            const sectionTitles = {
-                survey: "Sàng Lọc & Đánh Giá",
-                roadmap: "Lộ Trình Hỗ Trợ",
-                directory: "Danh Bạ Chuyên Gia",
-                knowledge: "Thư Viện Kiến Thức",
-                inspiration: "Truyền Cảm Hứng"
-            };
-
-            // Override navigateToSection to include header update
+            
             const originalNavigate = navigateToSection;
             navigateToSection = function(targetId) {
                 originalNavigate(targetId);
+                const activeLink = document.querySelector(`a[href="#${targetId}"]`);
+                const title = activeLink ? activeLink.dataset.title : 'Vòng Tay Yêu Thương';
+                
                 if (targetId === 'home') {
                     sectionHeader.classList.add('hidden');
                 } else {
                     sectionHeader.classList.remove('hidden');
-                    sectionTitle.textContent = sectionTitles[targetId] || '';
+                    sectionTitle.textContent = title;
                 }
             };
             

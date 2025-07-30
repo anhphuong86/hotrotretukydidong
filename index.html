@@ -1,0 +1,649 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vòng Tay Yêu Thương: Hỗ Trợ Trẻ Em</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        html { scroll-behavior: smooth; }
+        body {
+            font-family: 'Be Vietnam Pro', sans-serif;
+            background-color: #F9FAFB; /* Light Gray */
+            color: #374151; /* Dark Gray */
+        }
+        .bg-primary { background-color: #4A90E2; } /* Soothing Blue */
+        .text-primary { color: #4A90E2; }
+        .bg-secondary { background-color: #F3F4F6; } /* Lighter Gray */
+        .text-accent { color: #50E3C2; } /* Teal Accent */
+        .border-accent { border-color: #50E3C2; }
+        
+        /* Mobile Bottom Navigation */
+        .bottom-nav {
+            box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
+        }
+        .nav-link {
+            flex-direction: column;
+            font-weight: 500;
+            color: #6B7280; /* Medium Gray for inactive */
+            padding-top: 0.5rem;
+            padding-bottom: 0.5rem;
+            transition: all 0.2s ease-in-out;
+        }
+        .nav-link svg {
+            transition: all 0.2s ease-in-out;
+        }
+        .nav-link .nav-text {
+             font-size: 0.7rem;
+             margin-top: 2px;
+             transition: all 0.2s ease-in-out;
+        }
+        .nav-link.active {
+            color: #4A90E2; /* Primary color for active */
+        }
+        .nav-link.active svg {
+            transform: scale(1.1);
+        }
+        
+        .content-section { display: none; }
+        .content-section.active { display: block; animation: fadeIn 0.5s ease-in-out; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        .card {
+            background-color: #FFFFFF;
+            border: 1px solid #E5E7EB;
+            border-radius: 1rem;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05), 0 2px 4px -2px rgba(0,0,0,0.05);
+        }
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1), 0 4px 6px -4px rgba(0,0,0,0.1);
+        }
+        
+        .tag { display: inline-block; padding: 0.25rem 0.75rem; border-radius: 9999px; font-size: 0.75rem; font-weight: 600; }
+        .tag-diag { background-color: #e0f2fe; color: #0c4a6e; }
+        .tag-interv { background-color: #dcfce7; color: #14532d; }
+        .tag-comm { background-color: #fefce8; color: #713f12; }
+        .tag-paid { background-color: #fee2e2; color: #991b1b; }
+        .tag-free { background-color: #ecfdf5; color: #065f46; }
+
+        .accordion-header { cursor: pointer; transition: background-color 0.3s; }
+        .accordion-header:hover { background-color: #f9fafb; }
+        .accordion-content { max-height: 0; overflow: hidden; transition: max-height 0.5s ease-out, padding 0.5s ease-out; }
+
+        .chart-container { position: relative; margin: auto; height: 350px; width: 100%; max-width: 600px; }
+        
+        .tab-btn { transition: all 0.3s ease-in-out; border-bottom-width: 3px; }
+        .tab-btn.active { border-color: #4A90E2; color: #4A90E2; }
+        .tab-btn:not(.active) { border-color: transparent; }
+        .tab-content { display: none; }
+        .tab-content.active { display: block; animation: fadeIn 0.5s; }
+        
+        .form-input, .form-textarea, .form-select {
+            width: 100%; padding: 0.75rem; border: 1px solid #d1d5db; border-radius: 0.5rem; transition: border-color 0.2s, box-shadow 0.2s; background-color: #fff;
+        }
+        .form-input:focus, .form-textarea:focus, .form-select:focus {
+            border-color: #4A90E2; outline: none; box-shadow: 0 0 0 3px rgba(74, 144, 226, 0.2);
+        }
+        .hero-bg {
+             background: linear-gradient(rgba(255, 255, 255, 0.85), rgba(255, 255, 255, 0.85)), url('https://images.unsplash.com/photo-1519642918688-7e43b19245d8?q=80&w=2070&auto=format&fit=crop');
+             background-size: cover;
+             background-position: center;
+        }
+    </style>
+</head>
+<body class="antialiased">
+
+    <main class="p-4 md:p-10 pb-24">
+        <!-- Dynamic Header for section titles, hidden on home -->
+        <div id="section-header" class="mb-6 hidden">
+             <h2 id="section-title" class="text-2xl md:text-4xl font-extrabold text-gray-800"></h2>
+        </div>
+
+        <section id="home" class="content-section active">
+            <div class="hero-bg rounded-2xl p-8 md:p-16 text-center flex flex-col items-center justify-center min-h-[calc(100vh-8rem)] md:min-h-[calc(100vh-5rem)]">
+                <div class="bg-white/80 backdrop-blur-sm p-8 rounded-xl">
+                    <h2 class="text-3xl md:text-5xl font-extrabold text-gray-800 mb-4 leading-tight">Cùng con bước đi trên hành trình đặc biệt.</h2>
+                    <p class="text-base md:text-xl text-gray-600 max-w-3xl mx-auto mb-8 leading-relaxed">Chúng tôi biết rằng tình yêu thương của bạn dành cho con là vô bờ bến. Hãy để chúng tôi tiếp thêm sức mạnh cho tình yêu đó bằng những kiến thức chuyên sâu, sự kết nối tin cậy và sự sẻ chia từ những người có cùng hoàn cảnh.</p>
+                    <button id="start-survey-btn" class="bg-primary text-white font-bold py-3 px-8 rounded-full hover:bg-opacity-90 transition-colors shadow-lg text-lg transform hover:scale-105">
+                        Bắt đầu Sàng lọc cho bé
+                    </button>
+                </div>
+            </div>
+        </section>
+        
+        <section id="survey" class="content-section">
+            <div class="max-w-4xl mx-auto">
+                <p class="text-gray-500 mb-6 text-base">Một công cụ giúp bạn hệ thống hóa thông tin quan trọng về trẻ trước khi gặp chuyên gia.</p>
+                <div class="bg-blue-50 border-l-4 border-blue-500 text-blue-800 p-4 rounded-r-lg mb-8">
+                    <p class="font-bold">Mục đích của bảng khảo sát:</p>
+                    <p class="text-sm">Việc hoàn thành hồ sơ này sẽ là sự chuẩn bị vô giá cho buổi làm việc với bác sĩ, giúp họ có cái nhìn toàn diện và đưa ra tư vấn chính xác hơn. <strong>Đây không phải là công cụ chẩn đoán thay thế.</strong></p>
+                </div>
+                <form id="comprehensive-survey-form" class="bg-white p-6 md:p-10 rounded-2xl card">
+                    <div id="survey-content-container"></div>
+                    <div id="form-error-message" class="hidden bg-red-100 border-l-4 border-red-500 text-red-700 p-4 rounded-r-lg my-6"></div>
+                    <button type="submit" class="w-full mt-6 bg-primary text-white font-bold py-3 px-6 rounded-lg hover:bg-opacity-80 transition-colors shadow-lg hover:shadow-xl">Hoàn Thành & Xem Phân tích</button>
+                </form>
+                <div id="survey-results" class="mt-10 hidden"></div>
+            </div>
+        </section>
+
+        <section id="roadmap" class="content-section">
+            <div class="max-w-4xl mx-auto">
+                <p class="text-gray-500 text-center mb-12 text-lg">5 giai đoạn cốt lõi trên hành trình đồng hành cùng con.</p>
+                <div class="relative">
+                    <div class="hidden md:block absolute top-4 left-1/2 w-1 h-full bg-gray-200 -translate-x-1/2"></div>
+                    <div class="space-y-12 md:space-y-0 md:grid md:grid-cols-2 md:gap-x-16">
+                        <div class="md:text-right"><div class="bg-white p-6 rounded-2xl card relative"><div class="hidden md:block absolute w-5 h-5 bg-primary rounded-full top-1/2 -translate-y-1/2 -right-8 border-4 border-white"></div><p class="text-sm font-bold text-primary">GIAI ĐOẠN 1</p><h3 class="text-xl font-bold text-gray-800 my-2">Nhận biết & Sàng lọc</h3><p class="text-gray-600 text-sm">Gia đình nhận thấy các dấu hiệu bất thường và chủ động tìm hiểu, sử dụng các công cụ sàng lọc ban đầu.</p></div></div><div></div>
+                        <div></div><div><div class="bg-white p-6 rounded-2xl card relative"><div class="hidden md:block absolute w-5 h-5 bg-primary rounded-full top-1/2 -translate-y-1/2 -left-8 border-4 border-white"></div><p class="text-sm font-bold text-primary">GIAI ĐOẠN 2</p><h3 class="text-xl font-bold text-gray-800 my-2">Chẩn đoán Chuyên sâu</h3><p class="text-gray-600 text-sm">Đưa trẻ đến các cơ sở y tế uy tín để được bác sĩ, chuyên gia tâm lý lâm sàng thăm khám và đưa ra kết luận chính thức.</p></div></div>
+                        <div class="md:text-right"><div class="bg-white p-6 rounded-2xl card relative"><div class="hidden md:block absolute w-5 h-5 bg-primary rounded-full top-1/2 -translate-y-1/2 -right-8 border-4 border-white"></div><p class="text-sm font-bold text-primary">GIAI ĐOẠN 3</p><h3 class="text-xl font-bold text-gray-800 my-2">Xây dựng Kế hoạch (IEP)</h3><p class="text-gray-600 text-sm">Một Kế hoạch Can thiệp Cá nhân hóa được xây dựng, xác định các mục tiêu cụ thể về ngôn ngữ, nhận thức, hành vi và kỹ năng xã hội.</p></div></div><div></div>
+                        <div></div><div><div class="bg-white p-6 rounded-2xl card relative"><div class="hidden md:block absolute w-5 h-5 bg-primary rounded-full top-1/2 -translate-y-1/2 -left-8 border-4 border-white"></div><p class="text-sm font-bold text-primary">GIAI ĐOẠN 4</p><h3 class="text-xl font-bold text-gray-800 my-2">Lựa chọn Mô hình</h3><p class="text-gray-600 text-sm">Gia đình lựa chọn mô hình can thiệp phù hợp nhất với điều kiện và nhu cầu của trẻ (bán trú, theo giờ, tại nhà).</p></div></div>
+                        <div class="md:text-right"><div class="bg-white p-6 rounded-2xl card relative"><div class="hidden md:block absolute w-5 h-5 bg-primary rounded-full top-1/2 -translate-y-1/2 -right-8 border-4 border-white"></div><p class="text-sm font-bold text-primary">GIAI ĐOẠN 5</p><h3 class="text-xl font-bold text-gray-800 my-2">Phối hợp & Đồng hành</h3><p class="text-gray-600 text-sm">Duy trì sự phối hợp chặt chẽ, nhất quán giữa gia đình, chuyên gia và nhà trường để đảm bảo trẻ được hỗ trợ toàn diện.</p></div></div><div></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <section id="directory" class="content-section">
+             <p class="max-w-3xl mx-auto text-base text-gray-500 mb-8">Tìm kiếm bệnh viện, trung tâm can thiệp và trường học trên khắp 63 tỉnh thành.</p>
+            <div class="bg-white p-4 rounded-2xl mb-6 sticky top-4 z-40 border">
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <input type="text" id="search-input" placeholder="Tìm theo tên cơ sở..." class="form-input col-span-1 sm:col-span-2">
+                    <select id="region-filter" class="form-select"><option value="all">Toàn quốc</option></select>
+                    <button id="find-near-me-btn" class="w-full bg-primary/10 text-primary font-bold py-2.5 px-4 rounded-lg hover:bg-primary/20 transition-colors flex items-center justify-center"><svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>Tìm Gần Tôi</button>
+                    <div id="type-filter-container" class="col-span-1 sm:col-span-2 flex flex-wrap items-center gap-x-4 gap-y-2 pt-2"></div>
+                </div>
+                 <div id="location-status" class="text-sm text-gray-500 mt-2"></div>
+            </div>
+            <div class="text-center my-4"><p id="result-count" class="text-gray-600 font-semibold"></p></div>
+            <div id="directory-list" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6"></div>
+            <div id="no-results" class="hidden text-center py-16"><p class="text-xl font-semibold text-gray-500">Không tìm thấy kết quả phù hợp.</p><p class="text-gray-400 mt-2">Vui lòng thử thay đổi bộ lọc hoặc từ khóa tìm kiếm.</p></div>
+            <div class="mt-24">
+                <div class="text-center mb-12"><h2 class="text-2xl font-bold text-gray-800 mb-2">Hướng Dẫn Lựa Chọn Dịch Vụ</h2><p class="max-w-3xl mx-auto text-base text-gray-500">Bộ tiêu chí giúp gia đình đánh giá và đưa ra quyết định sáng suốt khi chọn trung tâm.</p></div>
+                <div id="accordion-container" class="max-w-4xl mx-auto space-y-4"></div>
+            </div>
+        </section>
+
+        <section id="knowledge" class="content-section">
+            <div class="max-w-5xl mx-auto">
+                <div class="border-b border-gray-200 mb-8">
+                    <nav class="-mb-px flex space-x-2 sm:space-x-6 overflow-x-auto" aria-label="Tabs">
+                        <button class="tab-btn active whitespace-nowrap py-4 px-1 text-sm sm:text-lg font-medium text-gray-500" data-tab="disorders">Tìm Hiểu Rối Loạn</button>
+                        <button class="tab-btn whitespace-nowrap py-4 px-1 text-sm sm:text-lg font-medium text-gray-500" data-tab="interventions">Phương Pháp Can Thiệp</button>
+                        <button class="tab-btn whitespace-nowrap py-4 px-1 text-sm sm:text-lg font-medium text-gray-500" data-tab="costs">Chi Phí & Chính Sách</button>
+                    </nav>
+                </div>
+                <div id="tab-disorders" class="tab-content active">
+                    <div class="flex flex-col sm:flex-row gap-4 mb-8">
+                        <button class="disorder-btn p-4 border-gray-200 rounded-2xl flex-1 text-center active" data-disorder="asd"><span class="text-3xl">🧩</span><span class="block font-semibold mt-2 text-base">Tự Kỷ (ASD)</span></button>
+                        <button class="disorder-btn p-4 border-gray-200 rounded-2xl flex-1 text-center" data-disorder="adhd"><span class="text-3xl">💨</span><span class="block font-semibold mt-2 text-base">Tăng Động (ADHD)</span></button>
+                        <button class="disorder-btn p-4 border-gray-200 rounded-2xl flex-1 text-center" data-disorder="cp"><span class="text-3xl">💪</span><span class="block font-semibold mt-2 text-base">Bại Não (CP)</span></button>
+                    </div>
+                    <div id="disorderContent" class="bg-white p-6 md:p-10 rounded-2xl card"></div>
+                </div>
+                <div id="tab-interventions" class="tab-content"><div class="space-y-8" id="intervention-list"></div></div>
+                <div id="tab-costs" class="tab-content"><div class="bg-white p-6 rounded-2xl card mb-12"><h3 class="text-xl font-bold text-gray-800 mb-6 text-center">Khoảng Trống giữa Chi Phí và Hỗ Trợ</h3><div class="chart-container"><canvas id="cost-chart"></canvas></div><div class="mt-8 text-center text-gray-600 max-w-2xl mx-auto"><p>Biểu đồ trên cho thấy một khoảng cách đáng kể giữa chi phí thực tế cho các dịch vụ can thiệp chuyên sâu và mức trợ cấp xã hội hàng tháng.</p></div></div><div class="bg-white p-6 rounded-2xl card"><h3 class="font-bold text-xl mb-6 text-gray-800 text-center">Khung Chính Sách Quốc Gia</h3><div class="overflow-x-auto"><table class="w-full text-sm text-left"><thead class="text-xs text-gray-700 uppercase bg-gray-50"><tr><th class="px-6 py-3">Văn bản/Chương trình</th><th class="px-6 py-3">Nội dung chính</th></tr></thead><tbody><tr class="border-b"><td class="px-6 py-4 font-medium">QĐ 1929/QĐ-TTg (2020)</td><td class="px-6 py-4 text-gray-600">Phê duyệt chương trình trợ giúp xã hội và PHCN cho người tâm thần, trẻ tự kỷ dựa vào cộng đồng.</td></tr><tr class="border-b"><td class="px-6 py-4 font-medium">QĐ 4485/QĐ-BYT (2021)</td><td class="px-6 py-4 text-gray-600">Đặt mục tiêu cụ thể: 70% trẻ dưới 6 tuổi được sàng lọc tự kỷ, đào tạo nhân lực.</td></tr><tr><td class="px-6 py-4 font-medium">QĐ 1591/QĐ-TTg (2023)</td><td class="px-6 py-4 text-gray-600">Phê duyệt chương trình chăm sóc sức khỏe tâm thần trẻ em, nhấn mạnh dịch vụ toàn diện, liên tục.</td></tr></tbody></table></div></div></div>
+            </div>
+        </section>
+
+        <section id="inspiration" class="content-section">
+            <div class="max-w-5xl mx-auto">
+                <div class="space-y-12">
+                     <div class="bg-white p-6 rounded-2xl card">
+                        <h3 class="font-bold text-2xl mb-6 text-gray-800">Những Câu Chuyện Vượt Lên Nghịch Cảnh</h3>
+                        <div id="story-tabs" class="flex flex-wrap gap-3 mb-6 border-b pb-4"><button class="story-tab active" data-story="autism">Tự Kỷ</button><button class="story-tab" data-story="depression">Vượt Qua Trầm Cảm</button><button class="story-tab" data-story="disability">Vượt Lên Nghịch Cảnh</button></div>
+                        <div id="story-autism" class="story-content active grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"><div class="text-center"><img src="https://placehold.co/400x400/E8EAE6/574F44?text=Temple+Grandin" alt="Image of Dr. Temple Grandin" class="w-24 h-24 rounded-full mx-auto mb-4 object-cover shadow-lg"><h4 class="font-bold text-lg">Dr. Temple Grandin</h4><p class="text-sm text-primary font-semibold">Nhà khoa học, Giáo sư</p><p class="text-xs text-gray-500 mt-2">Là một trong những nhà khoa học hàng đầu về hành vi động vật và là người tiên phong trong việc thiết kế chuồng trại nhân đạo.</p></div><div class="text-center"><img src="https://placehold.co/400x400/E8EAE6/574F44?text=Satoshi+Tajiri" alt="Image of Satoshi Tajiri" class="w-24 h-24 rounded-full mx-auto mb-4 object-cover shadow-lg"><h4 class="font-bold text-lg">Satoshi Tajiri</h4><p class="text-sm text-primary font-semibold">Nhà sáng tạo Pokémon</p><p class="text-xs text-gray-500 mt-2">Niềm đam mê mãnh liệt với việc sưu tầm côn trùng từ thời thơ ấu chính là nguồn cảm hứng để ông tạo ra thế giới Pokémon.</p></div><div class="text-center"><img src="https://placehold.co/400x400/E8EAE6/574F44?text=Anthony+Hopkins" alt="Image of Sir Anthony Hopkins" class="w-24 h-24 rounded-full mx-auto mb-4 object-cover shadow-lg"><h4 class="font-bold text-lg">Sir Anthony Hopkins</h4><p class="text-sm text-primary font-semibold">Diễn viên đoạt giải Oscar</p><p class="text-xs text-gray-500 mt-2">Được chẩn đoán mắc hội chứng Asperger, ông chia sẻ rằng góc nhìn khác biệt này đã giúp ông phân tích nhân vật một cách sâu sắc.</p></div></div>
+                        <div id="story-depression" class="story-content grid-cols-1 md:grid-cols-2 gap-8"><div class="text-center"><img src="https://placehold.co/400x400/E8EAE6/574F44?text=J.K.+Rowling" alt="Image of J.K. Rowling" class="w-24 h-24 rounded-full mx-auto mb-4 object-cover shadow-lg"><h4 class="font-bold text-lg">J.K. Rowling</h4><p class="text-sm text-primary font-semibold">Tác giả Harry Potter</p><p class="text-xs text-gray-500 mt-2">Bà đã biến những cảm xúc tuyệt vọng trong giai đoạn trầm cảm thành hình tượng Giám Ngục Azkaban, truyền cảm hứng cho hàng triệu người.</p></div><div class="text-center"><img src="https://placehold.co/400x400/E8EAE6/574F44?text=The+Rock" alt="Image of Dwayne Johnson" class="w-24 h-24 rounded-full mx-auto mb-4 object-cover shadow-lg"><h4 class="font-bold text-lg">Dwayne Johnson</h4><p class="text-sm text-primary font-semibold">Diễn viên, Đô vật</p><p class="text-xs text-gray-500 mt-2">Ông đã công khai về cuộc chiến của mình với trầm cảm, khuyến khích mọi người, đặc biệt là nam giới, hãy mạnh dạn tìm kiếm sự giúp đỡ.</p></div></div>
+                        <div id="story-disability" class="story-content grid-cols-1 md:grid-cols-2 gap-8"><div class="text-center"><img src="https://placehold.co/400x400/E8EAE6/574F44?text=Christy+Brown" alt="Image of Christy Brown" class="w-24 h-24 rounded-full mx-auto mb-4 object-cover shadow-lg"><h4 class="font-bold text-lg">Christy Brown</h4><p class="text-sm text-primary font-semibold">Nhà văn, Họa sĩ</p><p class="text-xs text-gray-500 mt-2">Bị bại não nặng, ông đã dùng chính bàn chân trái của mình để viết và vẽ, tạo nên cuốn tự truyện "Bàn Chân Trái Của Tôi".</p></div><div class="text-center"><img src="https://placehold.co/400x400/E8EAE6/574F44?text=Nguyen+Ngoc+Ky" alt="Image of Nguyễn Ngọc Ký" class="w-24 h-24 rounded-full mx-auto mb-4 object-cover shadow-lg"><h4 class="font-bold text-lg">Thầy giáo Nguyễn Ngọc Ký</h4><p class="text-sm text-primary font-semibold">Nhà giáo Ưu tú</p><p class="text-xs text-gray-500 mt-2">Bị liệt cả hai tay từ năm 4 tuổi, thầy đã dùng đôi chân của mình để viết nên một huyền thoại và truyền cảm hứng cho bao thế hệ.</p></div></div>
+                    </div>
+                    <div class="bg-white p-8 rounded-2xl card text-center">
+                        <h3 class="font-bold text-2xl mb-6 text-gray-800">Tương Lai & Hy Vọng</h3>
+                        <p class="text-gray-500 mb-8 text-lg">Những tiến bộ khoa học và công nghệ đang mở ra những hướng đi mới đầy hứa hẹn.</p>
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                            <div class="bg-secondary p-6 rounded-xl"><div class="text-4xl mb-4">🧬</div><h3 class="font-semibold text-lg mb-2 text-gray-800">Nghiên cứu Di truyền</h3><p class="text-gray-600 text-sm">Mở đường cho chẩn đoán sớm và can thiệp kịp thời trong "giai đoạn vàng".</p></div>
+                            <div class="bg-secondary p-6 rounded-xl"><div class="text-4xl mb-4">🌱</div><h3 class="font-semibold text-lg mb-2 text-gray-800">Liệu pháp Tế bào gốc</h3><p class="text-gray-600 text-sm">Hướng đi đột phá cho các tổn thương não như bại não, cải thiện chức năng vận động.</p></div>
+                            <div class="bg-secondary p-6 rounded-xl"><div class="text-4xl mb-4">🤖</div><h3 class="font-semibold text-lg mb-2 text-gray-800">Công nghệ 4.0</h3><p class="text-gray-600 text-sm">AI và VR tạo ra các công cụ học tập cá nhân hóa, an toàn và hấp dẫn cho trẻ.</p></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <nav id="mainNav" class="bottom-nav fixed bottom-0 left-0 right-0 bg-white/95 backdrop-blur-sm border-t border-gray-200 no-print">
+        <ul class="flex justify-around items-center h-16">
+            <li><a href="#home" class="nav-link flex items-center active"><svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path></svg><span class="nav-text">Trang Chủ</span></a></li>
+            <li><a href="#survey" class="nav-link flex items-center"><svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path></svg><span class="nav-text">Sàng Lọc</span></a></li>
+            <li><a href="#roadmap" class="nav-link flex items-center"><svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 20l-5.447-2.724A1 1 0 013 16.382V7.618a1 1 0 01.553-.894L9 4l6.447 2.724A1 1 0 0116 7.618v8.764a1 1 0 01-.553.894L9 20z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 4v16"></path></svg><span class="nav-text">Lộ Trình</span></a></li>
+            <li><a href="#directory" class="nav-link flex items-center"><svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path></svg><span class="nav-text">Tìm kiếm</span></a></li>
+            <li><a href="#knowledge" class="nav-link flex items-center"><svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path></svg><span class="nav-text">Kiến Thức</span></a></li>
+        </ul>
+    </nav>
+    
+    <script>
+    document.addEventListener('DOMContentLoaded', function () {
+        // DATA OBJECT
+        const appData = {
+            directory: [
+                { name: "Bệnh viện Nhi Trung ương (Khoa Tâm bệnh)", city: "Hà Nội", type: "Chẩn đoán/Y tế", cost: "Có phí", address: "18/879 La Thành, Đống Đa", contact: "024 6273 8532", lat: 21.022778, lon: 105.819444 },
+                { name: "Trung tâm Sao Mai", city: "Hà Nội", type: "Can thiệp/Giáo dục", cost: "Có phí", address: "Số 6, ngõ 8, Hoàng Đạo Thúy, P. Nhân Chính, Thanh Xuân", contact: "024 3557 8135", lat: 21.0074, lon: 105.8031 },
+                { name: "Bệnh viện Tâm thần Trung ương 1", city: "Hà Nội", type: "Chẩn đoán/Y tế", cost: "Có phí", address: "Hòa Bình, Thường Tín", contact: "024 3385 3227", lat: 20.8335, lon: 105.8624 },
+                { name: "Trung tâm Hỗ trợ phát triển giáo dục hòa nhập tỉnh Vĩnh Phúc", city: "Vĩnh Phúc", type: "Can thiệp/Giáo dục", cost: "Có phí", address: "Phố An Sơn, P. Tích Sơn, TP. Vĩnh Yên", contact: "0211 3846 688" },
+                { name: "Trung tâm Can thiệp sớm Tuệ Đức", city: "Bắc Ninh", type: "Can thiệp/Giáo dục", cost: "Có phí", address: "Đường Lê Thái Tổ, P. Võ Cường, TP. Bắc Ninh", contact: "098 968 68 86" },
+                { name: "Trung tâm Hỗ trợ phát triển giáo dục hòa nhập tỉnh Quảng Ninh", city: "Quảng Ninh", type: "Can thiệp/Giáo dục", cost: "Có phí", address: "Tổ 4, khu 5, P. Hồng Hà, TP. Hạ Long", contact: "0203 3818 789" },
+                { name: "Bệnh viện Trẻ em Hải Phòng (Đơn nguyên Tự kỷ - Tâm bệnh)", city: "Hải Phòng", type: "Chẩn đoán/Y tế", cost: "Có phí", address: "Số 55, đường Trường Chinh, P. Lãm Hà, Kiến An", contact: "0225 3542 518" },
+                { name: "Trung tâm Giáo dục Đặc biệt Hải Dương", city: "Hải Dương", type: "Can thiệp/Giáo dục", cost: "Có phí", address: "Đường Thanh Niên, P. Quang Trung, TP. Hải Dương", contact: "0220 3853 641" },
+                { name: "Trung tâm giáo dục hoà nhập Happy Smile", city: "Hưng Yên", type: "Can thiệp/Giáo dục", cost: "Có phí", address: "KĐT Ecopark, xã Xuân Quan, Văn Giang", contact: "096 822 69 96" },
+                { name: "Trung tâm can thiệp sớm Blue Sky", city: "Hà Nam", type: "Can thiệp/Giáo dục", cost: "Có phí", address: "Số 10, ngõ 208, đường Lê Công Thanh, P. Lam Hạ, TP. Phủ Lý", contact: "098 908 54 80" },
+                { name: "Trung tâm Giáo dục đặc biệt Mai Hương Nam Định", city: "Nam Định", type: "Can thiệp/Giáo dục", cost: "Có phí", address: "10/33 Hùng Vương, P. Vị Hoàng, TP. Nam Định", contact: "091 280 05 56" },
+                { name: "Trung tâm Hỗ trợ phát triển giáo dục hòa nhập tỉnh Ninh Bình", city: "Ninh Bình", type: "Can thiệp/Giáo dục", cost: "Có phí", address: "Đường Trịnh Tú, P. Ninh Khánh, TP. Ninh Bình", contact: "0229 3892 567" },
+                { name: "Trung tâm Hỗ trợ phát triển giáo dục hòa nhập tỉnh Thái Bình", city: "Thái Bình", type: "Can thiệp/Giáo dục", cost: "Có phí", address: "Đường Ngô Thì Nhậm, P. Kỳ Bá, TP. Thái Bình", contact: "0227 3835 152" },
+                { name: "Trung tâm GDHN Trường An", city: "Phú Thọ", type: "Can thiệp/Giáo dục", cost: "Có phí", address: "Phố Tân An, P. Nông Trang, TP. Việt Trì", contact: "097 593 39 93" },
+                { name: "Trung tâm Công tác xã hội - Bảo trợ xã hội tỉnh Hà Giang", city: "Hà Giang", type: "Hỗ trợ cộng đồng", cost: "Miễn phí/Chi phí thấp", address: "Tổ 17, P. Nguyễn Trãi, TP. Hà Giang", contact: "0219 3866 529" },
+                { name: "Trung tâm Hỗ trợ phát triển giáo dục hòa nhập tỉnh Tuyên Quang", city: "Tuyên Quang", type: "Can thiệp/Giáo dục", cost: "Có phí", address: "Tổ 9, P. Ỷ La, TP. Tuyên Quang", contact: "0207 3818 226" },
+                { name: "Trung tâm PHCN&GDHN trẻ khuyết tật tỉnh Cao Bằng", city: "Cao Bằng", type: "Can thiệp/Giáo dục", cost: "Có phí", address: "Phường Sông Bằng, TP. Cao Bằng", contact: "0206 3858 885" },
+                { name: "Trung Tâm Can Thiệp Sớm An Nhiên Bắc Kạn", city: "Bắc Kạn", type: "Can thiệp/Giáo dục", cost: "Có phí", address: "Tổ 1A, P. Đức Xuân, TP. Bắc Kạn", contact: "098 488 53 13" },
+                { name: "Trung tâm dạy trẻ chậm nói Phúc Tâm An", city: "Lạng Sơn", type: "Can thiệp/Giáo dục", cost: "Có phí", address: "Đường Bà Triệu, P. Đông Kinh, TP. Lạng Sơn", contact: "098 765 43 21" },
+                { name: "Trung tâm Hỗ trợ phát triển giáo dục hòa nhập tỉnh Thái Nguyên", city: "Thái Nguyên", type: "Can thiệp/Giáo dục", cost: "Có phí", address: "Tổ 16, P. Túc Duyên, TP. Thái Nguyên", contact: "0208 3757 558" },
+                { name: "Trung tâm Hỗ trợ phát triển giáo dục hoà nhập Hoa Hướng Dương", city: "Bắc Giang", type: "Can thiệp/Giáo dục", cost: "Có phí", address: "Số 68, đường Giáp Hải, P. Dĩnh Kế, TP. Bắc Giang", contact: "097 863 18 48" },
+                { name: "Trung Tâm Can Thiệp Trị Liệu Đăng Tâm", city: "Lào Cai", type: "Can thiệp/Giáo dục", cost: "Có phí", address: "Số 055, đường Hoàng Sào, P. Cốc Lếu, TP. Lào Cai", contact: "098 886 19 91" },
+                { name: "Trung tâm Hỗ trợ phát triển giáo dục hòa nhập tỉnh Yên Bái", city: "Yên Bái", type: "Can thiệp/Giáo dục", cost: "Có phí", address: "Tổ 1, P. Đồng Tâm, TP. Yên Bái", contact: "0216 3868 668" },
+                { name: "Trung tâm Hỗ trợ phát triển giáo dục hòa nhập tỉnh Điện Biên", city: "Điện Biên", type: "Can thiệp/Giáo dục", cost: "Có phí", address: "Tổ 1, P. Mường Thanh, TP. Điện Biên Phủ", contact: "0215 3829 628" },
+                { name: "Trung tâm Hỗ trợ phát triển giáo dục hòa nhập tỉnh Hòa Bình", city: "Hòa Bình", type: "Can thiệp/Giáo dục", cost: "Có phí", address: "Tổ 1, P. Chăm Mát, TP. Hòa Bình", contact: "0218 3881 189" },
+                { name: "Trung tâm Hỗ trợ phát triển giáo dục hòa nhập tỉnh Lai Châu", city: "Lai Châu", type: "Can thiệp/Giáo dục", cost: "Có phí", address: "Tổ 24, P. Đông Phong, TP. Lai Châu", contact: "0213 3792 288" },
+                { name: "Trung tâm Can thiệp sớm Hy Vọng", city: "Sơn La", type: "Can thiệp/Giáo dục", cost: "Có phí", address: "Tổ 3, P. Quyết Thắng, TP. Sơn La", contact: "098 698 28 83" },
+                { name: "Trung tâm Hỗ trợ phát triển giáo dục hòa nhập tỉnh Thanh Hóa", city: "Thanh Hóa", type: "Can thiệp/Giáo dục", cost: "Có phí", address: "33, P. Đông Vệ, TP. Thanh Hóa", contact: "0237 3951 465" },
+                { name: "Bệnh viện Sản Nhi Nghệ An (Khoa Tâm bệnh)", city: "Nghệ An", type: "Chẩn đoán/Y tế", cost: "Có phí", address: "Số 19, đường Tôn Thất Tùng, P. Hưng Dũng, TP. Vinh", contact: "1900 8082" },
+                { name: "Bệnh viện Phục hồi chức năng Hà Tĩnh", city: "Hà Tĩnh", type: "Chẩn đoán/Y tế", cost: "Có phí", address: "Số 22, đường Xô Viết Nghệ Tĩnh, TP. Hà Tĩnh", contact: "0239 6250 250" },
+                { name: "Trung tâm Giáo dục Trẻ khuyết tật huyện Lệ Thủy", city: "Quảng Bình", type: "Can thiệp/Giáo dục", cost: "Có phí", address: "TDP Thượng Giang, TT. Kiến Giang, H. Lệ Thủy", contact: "0232 3968 114" },
+                { name: "Trung tâm Hỗ trợ phát triển giáo dục hòa nhập tỉnh Quảng Trị", city: "Quảng Trị", type: "Can thiệp/Giáo dục", cost: "Có phí", address: "Khu phố 8, P. 5, TP. Đông Hà", contact: "0233 3588 556" },
+                { name: "Trung tâm Tịnh Trúc Gia", city: "Thừa Thiên Huế", type: "Hỗ trợ cộng đồng", cost: "Miễn phí/Chi phí thấp", address: "Tổ 3, KV1, P. Thủy Xuân, TP. Huế", contact: "0234 3889 105" },
+                { name: "Trung tâm hỗ trợ PTGD hòa nhập EDUNOW", city: "Đà Nẵng", type: "Can thiệp/Giáo dục", cost: "Có phí", address: "235 Tôn Đức Thắng, P. Hòa Minh, Q. Liên Chiểu", contact: "090 588 84 86" },
+                { name: "Trung tâm Can thiệp sớm Hội An", city: "Quảng Nam", type: "Can thiệp/Giáo dục", cost: "Có phí", address: "230 Lý Thường Kiệt, P. Cẩm Phô, TP. Hội An", contact: "090 514 11 79" },
+                { name: "Trung tâm Can thiệp sớm Ước Mơ Xanh", city: "Quảng Ngãi", type: "Can thiệp/Giáo dục", cost: "Có phí", address: "377 Phan Đình Phùng, TP. Quảng Ngãi", contact: "097 970 57 70" },
+                { name: "Trung tâm HTPTGD hòa nhập và Can thiệp sớm Hoàng Thy Phát", city: "Bình Định", type: "Can thiệp/Giáo dục", cost: "Có phí", address: "178 Tăng Bạt Hổ, TP. Quy Nhơn", contact: "093 553 53 57" },
+                { name: "Trung tâm Can Thiệp Sớm Sao Mai", city: "Phú Yên", type: "Can thiệp/Giáo dục", cost: "Có phí", address: "270 Trường Chinh, P. 7, TP. Tuy Hòa", contact: "090 538 11 81" },
+                { name: "Trung tâm Hỗ trợ phát triển giáo dục hòa nhập tỉnh Khánh Hòa", city: "Khánh Hòa", type: "Can thiệp/Giáo dục", cost: "Có phí", address: "02 Ngô Thời Nhiệm, P. Phước Long, TP. Nha Trang", contact: "0258 3881 141" },
+                { name: "Trung tâm Can thiệp sớm Ân Thiện", city: "Ninh Thuận", type: "Can thiệp/Giáo dục", cost: "Có phí", address: "Đường 16/4, P. Mỹ Bình, TP. Phan Rang-Tháp Chàm", contact: "093 301 11 32" },
+                { name: "Trung tâm Hỗ trợ phát triển giáo dục hòa nhập tỉnh Bình Thuận", city: "Bình Thuận", type: "Can thiệp/Giáo dục", cost: "Có phí", address: "253 Lê Duẩn, P. Phú Trinh, TP. Phan Thiết", contact: "0252 3824 463" },
+                { name: "Trung tâm Hỗ trợ phát triển giáo dục hòa nhập tỉnh Kon Tum", city: "Kon Tum", type: "Can thiệp/Giáo dục", cost: "Có phí", address: "406 Duy Tân, P. Duy Tân, TP. Kon Tum", contact: "0260 3862 317" },
+                { name: "Trung Tâm Giáo Dục Đặc Biệt Ánh Phượng", city: "Gia Lai", type: "Can thiệp/Giáo dục", cost: "Có phí", address: "24 Chu Mạnh Trinh, P. Hội Phú, TP. Pleiku", contact: "097 988 77 44" },
+                { name: "Trung tâm Hỗ trợ Phát triển Giáo dục Hoà nhập tỉnh Đắk Lắk", city: "Đắk Lắk", type: "Can thiệp/Giáo dục", cost: "Có phí", address: "132 Mạc Thị Bưởi, P. Thành Công, TP. Buôn Ma Thuột", contact: "0262 3859 997" },
+                { name: "Trung tâm Hỗ trợ phát triển giáo dục hòa nhập tỉnh Đắk Nông", city: "Đắk Nông", type: "Can thiệp/Giáo dục", cost: "Có phí", address: "Đường 23/3, P. Nghĩa Trung, TP. Gia Nghĩa", contact: "0261 3544 567" },
+                { name: "Trung tâm HTPTGD hòa nhập tỉnh Lâm Đồng", city: "Lâm Đồng", type: "Can thiệp/Giáo dục", cost: "Có phí", address: "37 Trần Nhật Duật, P. 5, TP. Đà Lạt", contact: "0263 3827 453" },
+                { name: "Trung tâm Hỗ trợ phát triển giáo dục hòa nhập tỉnh Bình Phước", city: "Bình Phước", type: "Can thiệp/Giáo dục", cost: "Có phí", address: "Đường ĐT741, P. Tân Xuân, TP. Đồng Xoài", contact: "0271 3887 779" },
+                { name: "Trung tâm Sống Trẻ", city: "Bình Dương", type: "Can thiệp/Giáo dục", cost: "Có phí", address: "Số 30, đường Yersin, P. Hiệp Thành, TP. Thủ Dầu Một", contact: "097 998 17 71" },
+                { name: "Trung tâm Can thiệp sớm An Nhiên", city: "Đồng Nai", type: "Can thiệp/Giáo dục", cost: "Có phí", address: "E8, KP. 1, P. Tân Hiệp, TP. Biên Hòa", contact: "093 798 17 07" },
+                { name: "Trung tâm Hỗ trợ phát triển giáo dục hòa nhập tỉnh Tây Ninh", city: "Tây Ninh", type: "Can thiệp/Giáo dục", cost: "Có phí", address: "Đường 30/4, P. 3, TP. Tây Ninh", contact: "0276 3814 269" },
+                { name: "Trung tâm Hỗ trợ phát triển giáo dục hòa nhập tỉnh Bà Rịa - Vũng Tàu", city: "Bà Rịa - Vũng Tàu", type: "Can thiệp/Giáo dục", cost: "Có phí", address: "207 Nguyễn Hữu Thọ, P. Phước Trung, TP. Bà Rịa", contact: "0254 3737 779" },
+                { name: "Trường nuôi dạy Trẻ em khuyết tật tỉnh Long An", city: "Long An", type: "Can thiệp/Giáo dục", cost: "Có phí", address: "144 Quốc lộ 1, P. 2, TP. Tân An", contact: "0272 3826 405" },
+                { name: "Trường Trẻ em khuyết tật Đồng Tháp", city: "Đồng Tháp", type: "Can thiệp/Giáo dục", cost: "Có phí", address: "Số 01, đường Tôn Đức Thắng, P. 1, TP. Cao Lãnh", contact: "0277 3851 582" },
+                { name: "Trường Nuôi dạy trẻ khuyết tật tỉnh Tiền Giang", city: "Tiền Giang", type: "Can thiệp/Giáo dục", cost: "Có phí", address: "544 Ấp Bắc, P. 5, TP. Mỹ Tho", contact: "0273 3873 240" },
+                { name: "Trung tâm Hỗ trợ phát triển giáo dục hòa nhập tỉnh An Giang", city: "An Giang", type: "Can thiệp/Giáo dục", cost: "Có phí", address: "Số 20, đường Tôn Đức Thắng, P. Mỹ Bình, TP. Long Xuyên", contact: "0296 3953 083" },
+                { name: "Trung tâm Hỗ trợ phát triển giáo dục hòa nhập Bến Tre", city: "Bến Tre", type: "Can thiệp/Giáo dục", cost: "Có phí", address: "Số 139A, đường Nguyễn Thị Định, P. Phú Tân, TP. Bến Tre", contact: "0275 3813 030" },
+                { name: "Trung tâm Hỗ trợ phát triển giáo dục hòa nhập tỉnh Vĩnh Long", city: "Vĩnh Long", type: "Can thiệp/Giáo dục", cost: "Có phí", address: "Số 57, đường Phạm Thái Bường, P. 4, TP. Vĩnh Long", contact: "0270 3823 150" },
+                { name: "Trường Tương Lai (Trường dạy trẻ khuyết tật)", city: "Trà Vinh", type: "Can thiệp/Giáo dục", cost: "Có phí", address: "Số 19, đường 19/5, Khóm 1, P. 1, TP. Trà Vinh", contact: "0294 3867 567" },
+                { name: "Trường Dạy trẻ khuyết tật Hậu Giang", city: "Hậu Giang", type: "Can thiệp/Giáo dục", cost: "Có phí", address: "Khu vực 4, P. 5, TP. Vị Thanh", contact: "0293 3582 222" },
+                { name: "Trung tâm Hỗ trợ phát triển giáo dục hòa nhập tỉnh Kiên Giang", city: "Kiên Giang", type: "Can thiệp/Giáo dục", cost: "Có phí", address: "Lô E3-08, đường 3/2, P. An Hòa, TP. Rạch Giá", contact: "0297 3947 700" },
+                { name: "Trường trẻ khuyết tật tỉnh Sóc Trăng", city: "Sóc Trăng", type: "Can thiệp/Giáo dục", cost: "Có phí", address: "125 Lê Duẩn, P. 3, TP. Sóc Trăng", contact: "0299 3821 312" },
+                { name: "Trường trẻ khuyết tật tỉnh Bạc Liêu", city: "Bạc Liêu", type: "Can thiệp/Giáo dục", cost: "Có phí", address: "Đường Tôn Đức Thắng, Khóm 5, P. 1, TP. Bạc Liêu", contact: "0291 3824 402" },
+                { name: "Trung tâm Hỗ trợ phát triển giáo dục hòa nhập tỉnh Cà Mau", city: "Cà Mau", type: "Can thiệp/Giáo dục", cost: "Có phí", address: "Số 101, đường Tôn Đức Thắng, P. 5, TP. Cà Mau", contact: "0290 3839 234" },
+            ],
+            guide: [
+                { title: 'Pháp lý và Chuyên môn', content: 'Cơ sở có giấy phép hoạt động không? Ai là người phụ trách chuyên môn, bằng cấp và kinh nghiệm của họ là gì? Đội ngũ giáo viên có được đào tạo chính quy không?' },
+                { title: 'Phương pháp Can thiệp', content: 'Trung tâm áp dụng những phương pháp khoa học nào (ABA, PECS, TEACCH, ESDM...)? Các phương pháp này có được giải thích rõ ràng, minh bạch cho phụ huynh không?' },
+                { title: 'Quy trình làm việc', content: 'Quy trình đánh giá đầu vào có chi tiết không? Trung tâm có xây dựng Kế hoạch can thiệp cá nhân (IEP) cho từng trẻ không? Phụ huynh có nhận được báo cáo tiến độ định kỳ không?' },
+                { title: 'Cơ sở vật chất và Môi trường', content: 'Môi trường học tập có an toàn, sạch sẽ, thân thiện không? Có đủ không gian chức năng (phòng cá nhân, phòng nhóm, sân chơi) không? Giáo cụ có đa dạng, phù hợp không?' },
+                { title: 'Tỷ lệ Giáo viên/Học sinh', content: 'Sĩ số lớp học nhóm là bao nhiêu? Tỷ lệ giáo viên/học sinh thế nào? Trẻ có được can thiệp 1 kèm 1 không, với thời lượng và tần suất ra sao?' },
+                { title: 'Sự tham gia của Gia đình', content: 'Phụ huynh có được khuyến khích tham gia, dự giờ không? Trung tâm có tổ chức các buổi tập huấn, hướng dẫn kỹ năng cho gia đình không?' },
+                { title: 'Chi phí', content: 'Học phí và các khoản phụ thu có được công khai, minh bạch ngay từ đầu không? Có hợp đồng rõ ràng không?' },
+            ],
+            disorders: {
+                asd: { 
+                    title: '🧠 Thấu hiểu Rối Loạn Phổ Tự Kỷ (ASD)', 
+                    content: `<p class="mb-4 text-slate-600">Đây không phải là một "căn bệnh", mà là một sự khác biệt trong cách não bộ phát triển và xử lý thông tin. Điều này dẫn đến những khác biệt trong cách trẻ giao tiếp, tương tác với xã hội và cảm nhận thế giới xung quanh.</p><div class="p-6 bg-secondary rounded-lg mb-6 border-l-4 border-accent"><h4 class="font-semibold text-primary mb-2">"Phổ" Tự Kỷ có nghĩa là gì?</h4><p class="text-sm text-slate-700">Hãy tưởng tượng một dải màu sắc, mỗi màu là một cá thể riêng biệt. Tự kỷ cũng vậy. Không có hai đứa trẻ tự kỷ nào hoàn toàn giống nhau. Một số trẻ có thể nói chuyện rất giỏi về chủ đề mình yêu thích nhưng lại gặp khó khăn trong giao tiếp xã giao. Một số trẻ khác có thể không dùng lời nói nhưng lại có khả năng đặc biệt về âm nhạc hoặc nghệ thuật. Vì vậy, chẩn đoán chỉ là điểm khởi đầu, việc thấu hiểu những điểm mạnh và thách thức riêng của con bạn mới là điều quan trọng nhất.</p></div><h4 class="font-bold text-lg text-primary mb-4 mt-8">3 Mức độ Hỗ trợ của Tự kỷ theo DSM-5</h4><div class="space-y-4 mb-8"><div class="p-4 border rounded-lg"><h5 class="font-semibold text-green-700">Mức độ 1: Cần hỗ trợ</h5><p class="text-sm text-slate-600">Trẻ gặp khó khăn trong việc bắt đầu tương tác xã hội và có những phản ứng không điển hình. Trẻ có thể nói được câu đầy đủ nhưng gặp khó khăn khi trò chuyện qua lại. Các hành vi lặp lại cản trở một số hoạt động.</p></div><div class="p-4 border rounded-lg"><h5 class="font-semibold text-yellow-700">Mức độ 2: Cần hỗ trợ đáng kể</h5><p class="text-sm text-slate-600">Trẻ có những thiếu hụt rõ rệt trong giao tiếp bằng lời và không lời. Tương tác xã hội rất hạn chế. Các hành vi lặp lại xuất hiện thường xuyên và gây cản trở rõ rệt đến các hoạt động hàng ngày.</p></div><div class="p-4 border rounded-lg"><h5 class="font-semibold text-red-700">Mức độ 3: Cần hỗ trợ rất đáng kể</h5><p class="text-sm text-slate-600">Trẻ có thiếu hụt nghiêm trọng trong giao tiếp, chỉ có vài từ hoặc không có lời nói, rất ít khi chủ động tương tác. Các hành vi lặp lại, giới hạn gây cản trở nghiêm trọng đến mọi mặt của cuộc sống.</p></div></div><h4 class="font-bold text-lg text-primary mb-4 mt-8">Những điểm mạnh tiềm ẩn</h4><p class="text-sm text-slate-600">Nhiều trẻ tự kỷ sở hữu những điểm mạnh đáng kinh ngạc như: trí nhớ phi thường, sự trung thực tuyệt đối, khả năng tập trung cao độ vào lĩnh vực mình đam mê, và một góc nhìn độc đáo, sáng tạo về thế giới.</p>` 
+                },
+                adhd: { 
+                    title: '💨 Thấu hiểu Rối Loạn Tăng Động Giảm Chú Ý (ADHD)', 
+                    content: `<p class="mb-4 text-slate-600">ADHD không phải là một vấn đề về đạo đức hay sự lười biếng. Đây là một rối loạn phát triển thần kinh, ảnh hưởng đến "trung tâm điều hành" của não bộ. Hãy hình dung não bộ có một vị giám đốc điều hành (CEO) chịu trách nhiệm lập kế hoạch, sắp xếp, kiểm soát xung động và duy trì sự tập trung. Ở trẻ có ADHD, vị "CEO" này đôi khi hoạt động hơi khác thường.</p><h4 class="font-bold text-lg text-primary mb-4 mt-8">Ba "Gương Mặt" của ADHD</h4><div class="grid grid-cols-1 md:grid-cols-2 gap-6"><div><h5 class="font-semibold mb-2">1. Giảm Chú Ý</h5><ul class="list-disc list-inside text-slate-600 space-y-1 text-sm"><li>Thường xuyên "để quên" đồ dùng học tập, áo khoác.</li><li>Đang làm bài thì bị phân tâm bởi tiếng chim hót ngoài cửa sổ.</li><li>Trông có vẻ "mơ màng", không nghe thấy khi người khác gọi.</li></ul></div><div><h5 class="font-semibold mb-2">2. Tăng Động & Bốc Đồng</h5><ul class="list-disc list-inside text-slate-600 space-y-1 text-sm"><li>Luôn cựa quậy, không thể ngồi yên trong lớp học.</li><li>Buột miệng trả lời khi cô giáo chưa hỏi xong.</li><li>Khó chờ đến lượt mình trong các trò chơi.</li></ul></div></div><p class="text-sm text-slate-600 mt-4 md:col-span-2"><em>Nhiều trẻ có cả hai nhóm triệu chứng trên (Thể kết hợp).</em></p><div class="mt-8 p-6 bg-green-50 border-l-4 border-green-500 rounded-lg"><h4 class="font-semibold text-green-800 mb-2">Năng Lượng và Sáng Tạo</h4><p class="text-sm text-green-700">Trẻ có ADHD thường sở hữu một nguồn năng lượng dồi dào, sự sáng tạo không giới hạn, khả năng ứng biến nhanh và một trái tim nồng hậu, nhiệt tình. Khi được định hướng đúng cách, đây có thể trở thành những thế mạnh vượt trội.</p></div>`
+                },
+                cp: { 
+                    title: '💪 Thấu hiểu Bại Não (CP)', 
+                    content: `<p class="mb-4 text-slate-600">Bại não (Cerebral Palsy) là một nhóm các rối loạn ảnh hưởng đến khả năng vận động và tư thế. Nguyên nhân là do một tổn thương xảy ra ở não bộ đang trong giai đoạn phát triển (trước, trong hoặc ngay sau khi sinh). Điều quan trọng cần nhấn mạnh: tổn thương não này <strong>không tiến triển</strong>, tức là nó không trở nên tệ hơn theo thời gian.</p><h4 class="font-bold text-lg text-primary mb-4 mt-8">Các Thể Bại Não Chính</h4><div class="grid grid-cols-1 md:grid-cols-2 gap-6"><div><h5 class="font-semibold mb-2">1. Bại não thể co cứng (Spastic CP)</h5><p class="text-sm text-slate-600 mb-2">Đây là thể phổ biến nhất. Đặc trưng bởi tình trạng tăng trương lực cơ, khiến cơ bắp bị cứng và co rút, gây khó khăn trong cử động.</p></div><div><h5 class="font-semibold mb-2">Các thể khác</h5><ul class="list-disc list-inside text-slate-600 space-y-1 text-sm"><li><strong>Thể loạn động (Dyskinetic CP):</strong> Gây ra các cử động không chủ ý, không kiểm soát được.</li><li><strong>Thể thất điều (Ataxic CP):</strong> Gây khó khăn về thăng bằng và phối hợp động tác.</li></ul></div></div><div class="mt-8 p-6 bg-blue-50 border-l-4 border-blue-500 rounded-lg"><h4 class="font-semibold text-blue-800 mb-2">Các Vấn Đề Sức Khỏe Đi Kèm</h4><p class="text-sm text-blue-700">Vì bại não là do tổn thương não, trẻ có thể gặp các vấn đề khác như: động kinh, suy giảm thị giác/thính giác, thiểu năng trí tuệ, rối loạn ngôn ngữ. Việc can thiệp đòi hỏi sự phối hợp của một đội ngũ đa chuyên ngành.</p></div>`
+                }
+            },
+            interventions: [
+                { title: 'Phân tích Hành vi Ứng dụng (ABA)', principle: 'Dựa trên khoa học hành vi, dùng củng cố tích cực để dạy kỹ năng và thay đổi hành vi.', goal: 'Dạy các kỹ năng mới (học tập, tự phục vụ, giao tiếp), giảm hành vi thách thức.', pros: 'Kết quả nhất quán, dạy được nhiều kỹ năng, có cấu trúc rõ ràng, có nhiều bằng chứng khoa học ủng hộ nhất.', cons: 'Đòi hỏi thời gian và chi phí lớn, có thể không giúp trẻ khái quát hóa kỹ năng ra môi trường mới, người thực hiện cần được đào tạo bài bản.' },
+                { title: 'Phương pháp Floortime (DIR)', principle: 'Dựa trên sự phát triển và mối quan hệ. Đi theo sự dẫn dắt của trẻ trong hoạt động chơi.', goal: 'Tăng cường tương tác, giao tiếp hai chiều, phát triển năng lực cảm xúc và tư duy.', pros: 'Phát triển cảm xúc, khuyến khích trẻ chủ động, phụ huynh đóng vai trò chính.', cons: 'Không tập trung dạy kỹ năng học thuật, có thể khó tương tác ban đầu với trẻ có mức độ nặng.' },
+                { title: 'Các Liệu pháp Chức năng', principle: 'Cải thiện các chức năng cụ thể để tăng cường sự độc lập và chất lượng cuộc sống.', goal: 'Vật lý trị liệu (cải thiện vận động thô), Hoạt động trị liệu (phát triển kỹ năng sống, điều hòa cảm giác), Ngôn ngữ trị liệu (phát triển giao tiếp, giải quyết vấn đề ăn/nuốt).', pros: 'Giải quyết các vấn đề cốt lõi về thể chất và chức năng, không thể thiếu trong mọi kế hoạch can thiệp.', cons: 'Cần sự kiên trì, phối hợp đa ngành và thường kéo dài trong nhiều năm.' },
+                { title: 'Điều trị bằng thuốc', principle: 'Sử dụng dược phẩm để quản lý các triệu chứng cốt lõi hoặc các rối loạn đi kèm.', goal: 'Kiểm soát triệu chứng để trẻ có thể tham gia và hưởng lợi từ các liệu pháp khác.', pros: 'Rất hiệu quả cho ADHD (ví dụ: Methylphenidate), giúp kiểm soát lo âu, hung hăng ở trẻ ASD hoặc giảm co cứng cơ ở trẻ Bại não (ví dụ: Baclofen).', cons: 'Không chữa khỏi bệnh, có thể có tác dụng phụ, cần được bác sĩ chuyên khoa chỉ định và theo dõi chặt chẽ.' }
+            ],
+            comprehensiveSurvey: {
+                partA: { title: 'Phần A: Thông Tin Chung', questions: [ { id: 'childName', label: 'Họ và tên trẻ', type: 'text', required: true }, { id: 'childDob', label: 'Ngày sinh của trẻ', type: 'date', required: true }, { id: 'childGender', label: 'Giới tính', type: 'select', options: ['Nam', 'Nữ', 'Khác'], required: true }, { id: 'parentName', label: 'Họ tên cha/mẹ/người giám hộ', type: 'text', required: true }, { id: 'parentContact', label: 'Số điện thoại liên hệ', type: 'tel', required: true }, { id: 'mainConcern', label: 'Mối lo ngại chính của gia đình về trẻ là gì? (Có thể chọn nhiều)', type: 'checkbox', required: true, options: ['Chậm nói hoặc các vấn đề ngôn ngữ', 'Khó khăn trong giao tiếp, tương tác xã hội', 'Kém tập trung, hiếu động quá mức', 'Các hành vi bất thường, lặp đi lặp lại', 'Vấn đề về vận động, đi lại', 'Khó khăn trong học tập', 'Khó khăn về ăn uống, giấc ngủ', 'Hay cáu gắt, ăn vạ'] } ] },
+                partB: { title: 'Phần B: Lịch Sử Phát Triển & Sức Khỏe', questions: [ { id: 'pregnancyIssues', label: 'Trong quá trình mang thai, mẹ có gặp vấn đề nào sau đây không?', type: 'checkbox', options: ['Mắc bệnh (tiểu đường, cao huyết áp, nhiễm trùng)', 'Căng thẳng/stress nặng kéo dài', 'Sử dụng thuốc (không theo chỉ định)', 'Tiếp xúc hóa chất/môi trường độc hại', 'Không có vấn đề gì đặc biệt'] }, { id: 'birthIssues', label: 'Quá trình sinh nở có gì bất thường không?', type: 'checkbox', options: ['Sinh non (trước 37 tuần)', 'Nhẹ cân khi sinh (dưới 2.5kg)', 'Bị ngạt khi sinh', 'Vàng da nhân não', 'Phải can thiệp sản khoa (forceps, hút)', 'Không có vấn đề gì đặc biệt'] }, { id: 'healthHistory', label: 'Trẻ có tiền sử bệnh tật nào đáng chú ý không?', type: 'checkbox', options: ['Co giật/Động kinh', 'Viêm màng não/Viêm não', 'Chấn thương đầu nặng', 'Dị ứng nặng hoặc hen suyễn', 'Các bệnh mãn tính khác', 'Không có tiền sử bệnh nặng'] }, { id: 'milestone_motor', label: 'Phát triển vận động của trẻ:', type: 'radio', options: ['Bình thường, đạt các mốc đúng hạn', 'Có vẻ hơi chậm hơn so với bạn bè', 'Chậm rõ rệt (ví dụ: sau 18 tháng mới biết đi)', 'Rất chậm, có các cử động bất thường'] }, { id: 'milestone_speech', label: 'Phát triển ngôn ngữ của trẻ:', type: 'radio', options: ['Bình thường, nói câu dài phù hợp lứa tuổi', 'Nói được từ đơn nhưng chậm nói câu', 'Chỉ nói được vài từ đơn, vốn từ rất hạn chế', 'Chưa nói hoặc chỉ phát ra âm thanh vô nghĩa'] } ] },
+                partC: { title: 'Phần C: Thói Quen & Môi Trường Sống', questions: [ { id: 'eatingHabits', label: 'Thói quen ăn uống của trẻ:', type: 'radio', options: ['Ăn uống đa dạng, dễ dàng', 'Hơi kén ăn nhưng vẫn đủ chất', 'Rất kén ăn, chỉ ăn một vài món nhất định', 'Gặp khó khăn khi nhai/nuốt hoặc các vấn đề khác'] }, { id: 'sleepingHabits', label: 'Giấc ngủ của trẻ:', type: 'radio', options: ['Ngủ ngoan, đúng giờ, đủ giấc', 'Thỉnh thoảng khó ngủ hoặc hay tỉnh giấc', 'Thường xuyên khó đi vào giấc ngủ hoặc ngủ không sâu', 'Rối loạn giấc ngủ nặng'] }, { id: 'playingHabits', label: 'Cách chơi của trẻ:', type: 'radio', options: ['Chơi tương tác, sáng tạo, phù hợp lứa tuổi', 'Thích chơi một mình nhưng vẫn có thể chơi cùng bạn', 'Chỉ thích chơi một mình, không quan tâm người khác', 'Chơi một cách bất thường, lặp đi lặp lại (VD: chỉ xoay bánh xe)'] }, { id: 'socialInteraction', label: 'Tương tác xã hội của trẻ:', type: 'radio', options: ['Chủ động, vui vẻ tương tác với mọi người', 'Hơi nhút nhát nhưng vẫn phản ứng khi được hỏi', 'Thường lảng tránh, không đáp lại khi gọi tên', 'Hoàn toàn không quan tâm đến người khác'] } ] },
+                partD: { title: 'Phần D: Lịch Sử Sức Khỏe Gia Đình', questions: [ { id: 'familyHistory', label: 'Trong gia đình (ông bà, cha mẹ, anh chị em), có ai từng được chẩn đoán hoặc có biểu hiện của các vấn đề sau không?', type: 'checkbox', options: ['Rối loạn phổ tự kỷ (ASD)', 'Tăng động giảm chú ý (ADHD)', 'Chậm phát triển trí tuệ/khó khăn học tập', 'Rối loạn lo âu/Trầm cảm/Rối loạn lưỡng cực', 'Động kinh', 'Các rối loạn thần kinh/di truyền khác', 'Không có tiền sử đáng chú ý trong gia đình'] } ] },
+                partE: { title: 'Phần E: Quan sát Hành vi (Sàng lọc cốt lõi)', questions: [ { category: 'asd_social', text: 'Trẻ có gặp khó khăn khi giao tiếp bằng mắt không?' }, { category: 'asd_social', text: 'Trẻ có tỏ ra ít quan tâm hoặc khó khăn khi chơi cùng các bạn đồng trang lứa không?' }, { category: 'asd_social', text: 'Trẻ có gặp khó khăn trong việc bắt đầu hoặc duy trì một cuộc trò chuyện hai chiều không?' }, { category: 'asd_repetitive', text: 'Trẻ có những hành động cơ thể lặp đi lặp lại (vỗ tay, lắc lư người, xoay tròn) không?' }, { category: 'asd_repetitive', text: 'Trẻ có tỏ ra rất khó chịu với những thay đổi nhỏ trong thói quen hoặc lịch trình hàng ngày không?' }, { category: 'asd_repetitive', text: 'Trẻ có những sở thích rất hẹp nhưng lại cực kỳ mãnh liệt và khác thường không?' }, { category: 'adhd_inattention', text: 'Trẻ có thường mắc những lỗi bất cẩn, bỏ qua chi tiết trong bài tập ở trường hoặc các hoạt động khác không?' }, { category: 'adhd_inattention', text: 'Trẻ có dễ bị phân tâm bởi các kích thích bên ngoài không?' }, { category: 'adhd_inattention', text: 'Trẻ có thường xuyên làm mất đồ dùng cần thiết không?' }, { category: 'adhd_hyperactivity', text: 'Trẻ có gặp khó khăn trong việc ngồi yên một chỗ không?' }, { category: 'adhd_hyperactivity', text: 'Trẻ có hay chạy nhảy, leo trèo quá mức ở những nơi không phù hợp không?' }, { category: 'adhd_hyperactivity', text: 'Trẻ có hay ngắt lời, xen vào cuộc trò chuyện hoặc trò chơi của người khác không?' } ] }
+            }
+        };
+
+        // --- CORE APP LOGIC ---
+        const navLinks = document.querySelectorAll('.nav-link');
+        const contentSections = document.querySelectorAll('.content-section');
+        
+        function navigateToSection(targetId) {
+            navLinks.forEach(l => l.classList.remove('active'));
+            const activeLink = document.querySelector(`a[href="#${targetId}"]`);
+            if(activeLink) activeLink.classList.add('active');
+            
+            contentSections.forEach(section => {
+                section.classList.toggle('active', section.id === targetId);
+            });
+            window.scrollTo(0, 0);
+        }
+
+        navLinks.forEach(link => {
+            link.addEventListener('click', e => {
+                e.preventDefault();
+                const targetId = link.getAttribute('href').substring(1);
+                navigateToSection(targetId);
+            });
+        });
+        
+        document.getElementById('start-survey-btn').addEventListener('click', () => navigateToSection('survey'));
+
+        // --- INITIALIZATION FUNCTIONS for each section ---
+        
+        function initKnowledgeTabs() {
+            const tabButtons = document.querySelectorAll('.tab-btn');
+            const tabContents = document.querySelectorAll('.tab-content');
+            tabButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    tabButtons.forEach(btn => btn.classList.remove('active'));
+                    button.classList.add('active');
+                    const tabId = `tab-${button.dataset.tab}`;
+                    tabContents.forEach(content => {
+                        content.classList.toggle('active', content.id === tabId);
+                    });
+                });
+            });
+        }
+
+        function initInspiration() {
+            const storyTabs = document.querySelectorAll('.story-tab');
+            const storyContents = document.querySelectorAll('.story-content');
+            storyTabs.forEach(tab => {
+                tab.addEventListener('click', () => {
+                    const targetStory = tab.dataset.story;
+                    storyTabs.forEach(t => t.classList.remove('active'));
+                    tab.classList.add('active');
+                    storyContents.forEach(content => {
+                        content.classList.toggle('active', content.id === `story-${targetStory}`);
+                    });
+                });
+            });
+        }
+
+        function initDisorders() {
+            const disorderButtons = document.querySelectorAll('.disorder-btn');
+            const disorderContentEl = document.getElementById('disorderContent');
+            if (!disorderContentEl) return;
+            function renderDisorderContent(disorderKey) {
+                const disorder = appData.disorders[disorderKey];
+                disorderContentEl.innerHTML = `<h3 class="font-bold text-2xl mb-4 text-primary">${disorder.title}</h3>${disorder.content}`;
+            }
+            disorderButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    const disorderKey = button.dataset.disorder;
+                    disorderButtons.forEach(btn => btn.classList.remove('active'));
+                    button.classList.add('active');
+                    renderDisorderContent(disorderKey);
+                });
+            });
+            renderDisorderContent('asd'); // Initial render
+        }
+        
+        function initInterventions() {
+            const interventionList = document.getElementById('intervention-list');
+            if (!interventionList || interventionList.childElementCount > 0) return;
+            appData.interventions.forEach(item => {
+                const div = document.createElement('div');
+                div.className = 'bg-white rounded-2xl p-8 card';
+                div.innerHTML = `<h3 class="text-xl font-bold mb-4 text-primary">${item.title}</h3><div class="mb-4"><h4 class="font-semibold text-base mb-1">Nguyên tắc cốt lõi</h4><p class="text-gray-600 text-sm">${item.principle}</p></div><div class="mb-4"><h4 class="font-semibold text-base mb-1">Mục tiêu chính</h4><p class="text-gray-600 text-sm">${item.goal}</p></div><div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm mt-6 pt-4 border-t"><div><h5 class="font-semibold text-green-600 mb-1">Ưu điểm</h5><p class="text-gray-600">${item.pros}</p></div><div><h5 class="font-semibold text-red-600 mb-1">Nhược điểm/Thách thức</h5><p class="text-gray-600">${item.cons}</p></div></div>`;
+                interventionList.appendChild(div);
+            });
+        }
+
+        function initDirectory() {
+            const searchInput = document.getElementById('search-input');
+            const regionFilter = document.getElementById('region-filter');
+            const typeFilterContainer = document.getElementById('type-filter-container');
+            const directoryList = document.getElementById('directory-list');
+            const noResults = document.getElementById('no-results');
+            const resultCount = document.getElementById('result-count');
+            const findNearMeBtn = document.getElementById('find-near-me-btn');
+            const locationStatus = document.getElementById('location-status');
+            if (!directoryList) return;
+            let filters = { search: '', region: 'all', types: [] };
+            if (regionFilter.options.length <= 1) {
+                const cities = [...new Set(appData.directory.map(item => item.city))].sort((a, b) => a.localeCompare(b, 'vi'));
+                cities.forEach(city => {
+                    const option = document.createElement('option');
+                    option.value = city;
+                    option.textContent = city;
+                    regionFilter.appendChild(option);
+                });
+                const types = [...new Set(appData.directory.map(item => item.type))];
+                types.forEach(type => {
+                    const div = document.createElement('div');
+                    div.className = 'flex items-center';
+                    const checkbox = document.createElement('input');
+                    checkbox.type = 'checkbox';
+                    checkbox.id = `type-${type}`;
+                    checkbox.value = type;
+                    checkbox.className = 'h-4 w-4 text-primary border-gray-300 rounded focus:ring-primary';
+                    checkbox.addEventListener('change', (e) => {
+                        if (e.target.checked) filters.types.push(type);
+                        else filters.types = filters.types.filter(t => t !== type);
+                        applyFilters();
+                    });
+                    const label = document.createElement('label');
+                    label.htmlFor = `type-${type}`;
+                    label.textContent = type;
+                    label.className = 'ml-2 text-sm text-gray-700';
+                    div.appendChild(checkbox);
+                    div.appendChild(label);
+                    typeFilterContainer.appendChild(div);
+                });
+            }
+            function getTypeTag(type) { if (type === 'Chẩn đoán/Y tế') return 'tag-diag'; if (type === 'Can thiệp/Giáo dục') return 'tag-interv'; if (type === 'Hỗ trợ cộng đồng') return 'tag-comm'; return 'bg-gray-200 text-gray-800'; }
+            function getCostTag(cost) { if (cost === 'Có phí') return 'tag-paid'; if (cost === 'Miễn phí/Chi phí thấp') return 'tag-free'; return 'bg-gray-200 text-gray-800'; }
+            function renderDirectory(data, isGeoSearch = false) {
+                directoryList.innerHTML = '';
+                noResults.classList.toggle('hidden', data.length > 0);
+                directoryList.classList.toggle('hidden', data.length === 0);
+                resultCount.textContent = `Tìm thấy ${data.length} kết quả.`;
+                data.forEach(item => {
+                    const cardEl = document.createElement('div');
+                    cardEl.className = 'bg-white rounded-2xl p-6 flex flex-col card';
+                    let distanceHTML = isGeoSearch && item.distance !== undefined ? `<p class="text-sm font-bold text-accent mb-2">${item.distance.toFixed(1)} km</p>` : '';
+                    cardEl.innerHTML = `${distanceHTML}<h3 class="text-lg font-bold text-primary mb-3">${item.name}</h3><p class="text-gray-500 text-sm mb-3 flex items-start"><svg class="w-4 h-4 mr-2 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path></svg><span>${item.address}</span></p><p class="text-gray-500 text-sm mb-4 flex items-center"><svg class="w-4 h-4 mr-2 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"></path></svg>${item.contact}</p><div class="mt-auto pt-4 border-t border-gray-100 flex flex-wrap gap-2"><span class="tag ${getTypeTag(item.type)}">${item.type}</span><span class="tag ${getCostTag(item.cost)}">${item.cost}</span><span class="tag bg-blue-100 text-blue-800">${item.city}</span></div>`;
+                    directoryList.appendChild(cardEl);
+                });
+            }
+            function applyFilters() {
+                let filteredData = appData.directory.filter(item => (item.name.toLowerCase().includes(filters.search.toLowerCase())) && (filters.region === 'all' || item.city === filters.region) && (filters.types.length === 0 || filters.types.includes(item.type)));
+                renderDirectory(filteredData);
+            }
+            searchInput.addEventListener('input', (e) => { filters.search = e.target.value; applyFilters(); });
+            regionFilter.addEventListener('change', (e) => { filters.region = e.target.value; applyFilters(); });
+            findNearMeBtn.addEventListener('click', () => {
+                if (!navigator.geolocation) { locationStatus.textContent = 'Trình duyệt của bạn không hỗ trợ định vị.'; return; }
+                locationStatus.textContent = 'Đang xác định vị trí của bạn...';
+                navigator.geolocation.getCurrentPosition(
+                    (position) => {
+                        locationStatus.textContent = `Đã tìm thấy vị trí. Đang tìm các cơ sở gần nhất...`;
+                        const nearbyLocations = appData.directory.filter(item => item.lat && item.lon).map(item => ({ ...item, distance: getDistance(position.coords.latitude, position.coords.longitude, item.lat, item.lon) })).sort((a, b) => a.distance - b.distance).slice(0, 10);
+                        renderDirectory(nearbyLocations, true);
+                    },
+                    () => { locationStatus.textContent = 'Không thể truy cập vị trí. Vui lòng cấp quyền truy cập vị trí cho trang web.'; }
+                );
+            });
+            function getDistance(lat1, lon1, lat2, lon2) { const R = 6371; const dLat = deg2rad(lat2 - lat1); const dLon = deg2rad(lon2 - lon1); const a = Math.sin(dLat / 2) * Math.sin(dLat / 2) + Math.cos(deg2rad(lat1)) * Math.cos(deg2rad(lat2)) * Math.sin(dLon / 2) * Math.sin(dLon / 2); const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a)); return R * c; }
+            function deg2rad(deg) { return deg * (Math.PI / 180); }
+            applyFilters();
+        }
+
+        function initGuide() {
+            const container = document.getElementById('accordion-container');
+            if(!container || container.childElementCount > 0) return;
+            appData.guide.forEach((item) => {
+                const itemDiv = document.createElement('div');
+                itemDiv.className = 'bg-white rounded-2xl shadow-sm overflow-hidden border';
+                itemDiv.innerHTML = `<div class="accordion-header flex justify-between items-center p-5"><h3 class="text-lg font-semibold text-primary">${item.title}</h3><svg class="w-6 h-6 transform transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg></div><div class="accordion-content"><p class="p-5 pt-0 text-gray-600">${item.content}</p></div>`;
+                container.appendChild(itemDiv);
+            });
+            container.addEventListener('click', (e) => {
+                const header = e.target.closest('.accordion-header');
+                if (header) {
+                    const content = header.nextElementSibling;
+                    const icon = header.querySelector('svg');
+                    const isOpening = !content.style.maxHeight;
+                    document.querySelectorAll('#accordion-container .accordion-content').forEach(c => { c.style.maxHeight = null; });
+                    document.querySelectorAll('#accordion-container .accordion-header svg').forEach(i => { i.style.transform = 'rotate(0deg)'; });
+                    if(isOpening) {
+                        content.style.maxHeight = content.scrollHeight + 'px';
+                        icon.style.transform = 'rotate(180deg)';
+                    }
+                }
+            });
+        }
+
+        function initCosts() {
+            const ctx = document.getElementById('cost-chart')?.getContext('2d');
+            if(!ctx || Chart.getChart(ctx)) return;
+            new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: ['Can thiệp Bán trú', 'Can thiệp 1:1 (20h/tháng)', 'Gia sư tại nhà (GV)'],
+                    datasets: [{ label: 'Chi phí can thiệp (VNĐ)', data: [7500000, 4300000, 7500000], backgroundColor: 'rgba(74, 144, 226, 0.7)', borderColor: '#4A90E2', borderWidth: 1, borderRadius: 5 }, { label: 'Hỗ trợ tối đa (VNĐ)', data: [900000, 900000, 900000], type: 'line', borderColor: '#50E3C2', backgroundColor: '#50E3C2', fill: false, tension: 0.1, pointBackgroundColor: '#50E3C2', pointRadius: 5 }]
+                },
+                options: { responsive: true, maintainAspectRatio: false, scales: { y: { beginAtZero: true, ticks: { callback: (value) => new Intl.NumberFormat('vi-VN').format(value) } } }, plugins: { tooltip: { callbacks: { label: (context) => `${context.dataset.label || ''}: ${new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(context.parsed.y)}` } } } }
+            });
+        }
+        
+        function initSurvey() {
+            const surveyData = appData.comprehensiveSurvey;
+            const container = document.getElementById('survey-content-container');
+            if (!container || container.childElementCount > 0) return;
+            let html = '';
+            for (const partKey in surveyData) {
+                const part = surveyData[partKey];
+                html += `<div class="mb-10"><h3 class="text-xl font-bold text-primary mb-6 pb-2 border-b-2 border-secondary">${part.title}</h3><div class="space-y-6">`;
+                part.questions.forEach((q, index) => {
+                    const id = q.id || `${partKey}-q${index}`;
+                    const questionText = q.label || q.text;
+                    if (partKey === 'partE') {
+                        html += `<div class="bg-gray-50 p-5 rounded-lg border"><label class="font-semibold text-gray-700 block mb-3">${index + 1}. ${questionText}</label><div class="flex flex-wrap gap-x-6 gap-y-2"><label class="flex items-center space-x-2 cursor-pointer"><input type="radio" name="${id}" value="0" required class="form-radio text-primary focus:ring-primary"><span>Không/Hiếm khi</span></label><label class="flex items-center space-x-2 cursor-pointer"><input type="radio" name="${id}" value="1" class="form-radio text-primary focus:ring-primary"><span>Thỉnh thoảng</span></label><label class="flex items-center space-x-2 cursor-pointer"><input type="radio" name="${id}" value="2" class="form-radio text-primary focus:ring-primary"><span>Thường xuyên</span></label><label class="flex items-center space-x-2 cursor-pointer"><input type="radio" name="${id}" value="3" class="form-radio text-primary focus:ring-primary"><span>Rất thường xuyên</span></label></div></div>`;
+                    } else {
+                        html += `<div><label for="${id}" class="font-semibold text-gray-700 block mb-2">${questionText}${q.required ? '<span class="text-red-500 ml-1">*</span>' : ''}</label>`;
+                        switch (q.type) {
+                            case 'text': case 'date': case 'tel': html += `<input type="${q.type}" id="${id}" name="${id}" class="form-input" ${q.required ? 'required' : ''}>`; break;
+                            case 'select': html += `<select id="${id}" name="${id}" class="form-select" ${q.required ? 'required' : ''}><option value="">-- Chọn --</option>${q.options.map(opt => `<option value="${opt}">${opt}</option>`).join('')}</select>`; break;
+                            case 'checkbox': html += `<div class="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-2">${q.options.map(opt => `<label class="flex items-center space-x-2 p-3 bg-gray-50 rounded-md border cursor-pointer hover:bg-gray-100 has-[:checked]:bg-blue-50 has-[:checked]:border-primary"><input type="checkbox" name="${id}" value="${opt}" class="form-checkbox text-primary focus:ring-primary"><span>${opt}</span></label>`).join('')}</div>`; break;
+                            case 'radio': html += `<div class="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-2">${q.options.map(opt => `<label class="flex items-center space-x-2 p-3 bg-gray-50 rounded-md border cursor-pointer hover:bg-gray-100 has-[:checked]:bg-blue-50 has-[:checked]:border-primary"><input type="radio" name="${id}" value="${opt}" ${q.required ? 'required' : ''} class="form-radio text-primary focus:ring-primary"><span>${opt}</span></label>`).join('')}</div>`; break;
+                        }
+                        html += `</div>`;
+                    }
+                });
+                html += `</div></div>`;
+            }
+            container.innerHTML = html;
+            const surveyForm = document.getElementById('comprehensive-survey-form');
+            surveyForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+                const formData = new FormData(surveyForm);
+                const resultsContainer = document.getElementById('survey-results');
+                const report = getDetailedAnalysis(formData);
+                let summaryHTML = `<div id="survey-results-printable" class="card p-6 md:p-10"><h3 class="text-2xl font-bold text-primary mb-2 text-center">Báo Cáo Phân Tích Tổng Hợp</h3><p class="text-center text-gray-500 mb-8">Dành cho ${formData.get('childName') || 'trẻ'}, sinh ngày ${formData.get('childDob') || 'chưa cung cấp'}.</p><div class="space-y-8">${report.summary}${report.detailedAnalysis}${report.discussionPoints}${report.movement}${report.diet}</div><p class="text-xs text-center mt-10 text-gray-400">Lưu ý: Báo cáo này được tạo tự động và chỉ mang tính chất tham khảo, không thay thế cho chẩn đoán y tế chuyên nghiệp.</p></div><div class="mt-8 text-center no-print"><button id="print-report-btn" class="bg-primary text-white font-bold py-3 px-6 rounded-lg hover:bg-opacity-80 transition-colors shadow-lg">In Báo Cáo (PDF)</button></div>`;
+                resultsContainer.innerHTML = summaryHTML;
+                resultsContainer.classList.remove('hidden');
+                resultsContainer.scrollIntoView({ behavior: 'smooth' });
+                document.getElementById('print-report-btn').addEventListener('click', () => { window.print(); });
+            });
+        }
+        
+        function calculateAgeInMonths(dob) { if (!dob) return null; const birthDate = new Date(dob); const today = new Date(); let months = (today.getFullYear() - birthDate.getFullYear()) * 12; months -= birthDate.getMonth(); months += today.getMonth(); return months <= 0 ? 0 : months; }
+        function getDetailedAnalysis(formData) {
+            const ageInMonths = calculateAgeInMonths(formData.get('childDob'));
+            let summaryHTML = `<div><h4 class="text-lg font-bold text-primary mb-4 border-b pb-2">1. Tổng hợp Thông tin Ban đầu</h4><div class="bg-secondary p-4 rounded-lg space-y-2 text-sm"><p><strong>Thông tin trẻ:</strong> ${formData.get('childName') || 'Chưa cung cấp'}, ${ageInMonths ? `khoảng ${ageInMonths} tháng tuổi` : 'chưa rõ tuổi'}.</p><p><strong>Mối lo ngại chính:</strong> ${formData.getAll('mainConcern').join(', ') || 'Chưa rõ'}</p><p><strong>Lịch sử thai kỳ & sinh nở:</strong> ${formData.getAll('pregnancyIssues').join(', ') || 'Bình thường'}; ${formData.getAll('birthIssues').join(', ') || 'Bình thường'}</p><p><strong>Vận động:</strong> ${formData.get('milestone_motor') || 'Chưa rõ'}</p><p><strong>Ngôn ngữ:</strong> ${formData.get('milestone_speech') || 'Chưa rõ'}</p></div></div>`;
+            let scores = { asd_social: 0, asd_repetitive: 0, adhd_inattention: 0, adhd_hyperactivity: 0 };
+            const maxScores = { asd_social: 9, asd_repetitive: 9, adhd_inattention: 9, adhd_hyperactivity: 9 };
+            appData.comprehensiveSurvey.partE.questions.forEach((q, index) => { scores[q.category] += parseInt(formData.get(`partE-q${index}`) || 0); });
+            let detailedAnalysisHTML = `<div><h4 class="text-lg font-bold text-primary mb-4 border-b pb-2">2. Phân tích Chi tiết các Lĩnh vực</h4><div class="bg-secondary p-4 rounded-lg space-y-4 text-sm"><div><p class="font-semibold">Giao tiếp & Tương tác Xã hội: <span class="font-bold">${scores.asd_social}/${maxScores.asd_social}</span></p><p class="text-gray-600"><b>Góc nhìn chuyên gia:</b> Điểm số này cho thấy trẻ có thể đang gặp khó khăn trong việc 'đọc' các tín hiệu xã hội (ánh mắt, nét mặt), do vùng não xử lý thông tin xã hội phát triển khác biệt.</p></div><div><p class="font-semibold">Hành vi & Giác quan: <span class="font-bold">${scores.asd_repetitive}/${maxScores.asd_repetitive}</span></p><p class="text-gray-600"><b>Góc nhìn chuyên gia:</b> Các hành vi lặp lại thường là cách trẻ tự trấn an khi hệ thần kinh bị quá tải. Nhu cầu về sự quen thuộc giúp trẻ cảm thấy an toàn trong một thế giới phức tạp.</p></div><div><p class="font-semibold">Sự tập trung & Chú ý: <span class="font-bold">${scores.adhd_inattention}/${maxScores.adhd_inattention}</span></p><p class="text-gray-600"><b>Góc nhìn chuyên gia:</b> Phản ánh khó khăn trong 'chức năng điều hành' của não bộ - khả năng lọc bỏ yếu tố gây nhiễu. Đây là một thách thức về sinh học thần kinh, không phải sự lười biếng.</p></div><div><p class="font-semibold">Năng động & Kiểm soát Xung động: <span class="font-bold">${scores.adhd_hyperactivity}/${maxScores.adhd_hyperactivity}</span></p><p class="text-gray-600"><b>Góc nhìn chuyên gia:</b> Não bộ của trẻ có thể gặp khó khăn trong việc 'phanh' lại các hành động bột phát. Nhu cầu vận động liên tục là một biểu hiện của việc não bộ đang tự điều chỉnh.</p></div></div></div>`;
+            let discussionPointsHTML = '<div><h4 class="text-lg font-bold text-primary mb-4 border-b pb-2">3. Gợi ý từ Chuyên gia</h4><div class="bg-secondary p-4 rounded-lg"><ul class="list-disc list-inside space-y-3 text-sm">';
+            if (scores.asd_social > 4 || scores.asd_repetitive > 4) discussionPointsHTML += '<li><strong class="text-primary">Đánh giá ASD:</strong> Các biểu hiện về giao tiếp và hành vi cho thấy gia đình nên tiến hành một buổi đánh giá chính thức với các công cụ chuẩn quốc tế (ADOS-2, CARS) để xây dựng lộ trình can thiệp hiệu quả.</li>';
+            if (scores.adhd_inattention > 5 || scores.adhd_hyperactivity > 5) discussionPointsHTML += '<li><strong class="text-primary">Đánh giá ADHD:</strong> Các biểu hiện về tập trung và hiếu động là rất đáng chú ý. Nên sử dụng các thang đánh giá (Vanderbilt, Conners) để phân biệt giữa tính cách hiếu động và dấu hiệu ADHD.</li>';
+            if (formData.get('milestone_motor')?.includes('Chậm')) discussionPointsHTML += `<li><strong class="text-primary">Đánh giá Vận động:</strong> Sự chậm trễ trong các mốc vận động cần được chuyên gia Vật lý trị liệu đánh giá sớm để có các bài tập hỗ trợ kịp thời.</li>`;
+            if (formData.get('milestone_speech')?.includes('Chậm') || formData.get('milestone_speech')?.includes('Chưa nói')) discussionPointsHTML += `<li><strong class="text-primary">Đánh giá Ngôn ngữ:</strong> Tình trạng này cần được chuyên gia Ngôn ngữ trị liệu đánh giá sâu hơn về khả năng hiểu và diễn đạt của trẻ.</li>`;
+            if (discussionPointsHTML.length <= 90) discussionPointsHTML += '<li>Dựa trên thông tin đã cung cấp, chưa có mô hình dấu hiệu nào nổi bật rõ rệt. Cha mẹ nên trình bày tất cả các mối lo ngại với bác sĩ để được tư vấn và theo dõi sát sao.</li>';
+            discussionPointsHTML += '</ul></div></div>';
+            let movementHTML = '<div><h4 class="text-lg font-bold text-primary mb-4 border-b pb-2">4. Gợi ý về Vận động</h4><div class="bg-secondary p-4 rounded-lg"><ul class="list-disc list-inside space-y-2 text-sm">';
+            if (scores.adhd_hyperactivity > 5) movementHTML += '<li><strong>Giải tỏa năng lượng:</strong> Các môn thể thao cường độ cao (bóng đá, bơi lội) giúp trẻ giải phóng năng lượng dư thừa và sản sinh dopamine, tốt cho sự tập trung.</li>';
+            if (scores.asd_repetitive > 4) movementHTML += '<li><strong>Điều hòa cảm giác:</strong> Các trò chơi (xích đu, nhà bóng, chơi với cát/nước) giúp "lấp đầy" nhu cầu cảm giác của trẻ, giảm các hành vi tự kích thích.</li>';
+            movementHTML += '<li><strong>Vận động tinh:</strong> Chơi với đất nặn, xé giấy, xâu chuỗi hạt giúp tăng cường sự khéo léo của đôi tay, là nền tảng cho việc cầm bút và các kỹ năng tự phục vụ.</li>';
+            movementHTML += '</ul></div></div>';
+            let dietHTML = '<div><h4 class="text-lg font-bold text-primary mb-4 border-b pb-2">5. Gợi ý về Dinh dưỡng</h4><div class="bg-secondary p-4 rounded-lg"><ul class="list-disc list-inside space-y-2 text-sm">';
+            dietHTML += '<li><strong>Chế độ ăn cân bằng:</strong> Đảm bảo trẻ nhận đủ các nhóm chất để não bộ có đủ năng lượng hoạt động tối ưu.</li>';
+            dietHTML += '<li><strong>Bổ sung Omega-3:</strong> Các loại cá béo (cá hồi) và các loại hạt (óc chó) rất tốt cho chức năng não bộ, hỗ trợ khả năng tập trung.</li>';
+            if (formData.get('eatingHabits')?.includes('kén ăn')) dietHTML += '<li><strong>Giải quyết kén ăn:</strong> Giới thiệu món ăn mới một cách kiên nhẫn, cho trẻ tham gia vào quá trình chuẩn bị. Thử các cách chế biến khác nhau (xay, nghiền, hấp, nướng).</li>';
+            dietHTML += '<li><strong>Hạn chế đường & phụ gia:</strong> Giảm thiểu đồ ngọt, nước có ga và thực phẩm chế biến sẵn có thể ảnh hưởng đến hành vi và sự tập trung của trẻ.</li>';
+            dietHTML += '</ul></div></div>';
+            return { summary: summaryHTML, detailedAnalysis: detailedAnalysisHTML, discussionPoints: discussionPointsHTML, movement: movementHTML, diet: dietHTML };
+        }
+
+        // --- MASTER INITIALIZATION ---
+        function initializeApp() {
+            const sectionHeader = document.getElementById('section-header');
+            const sectionTitle = document.getElementById('section-title');
+            const sectionTitles = {
+                survey: "Sàng Lọc & Đánh Giá",
+                roadmap: "Lộ Trình Hỗ Trợ",
+                directory: "Danh Bạ Chuyên Gia",
+                knowledge: "Thư Viện Kiến Thức",
+                inspiration: "Truyền Cảm Hứng"
+            };
+
+            // Override navigateToSection to include header update
+            const originalNavigate = navigateToSection;
+            navigateToSection = function(targetId) {
+                originalNavigate(targetId);
+                if (targetId === 'home') {
+                    sectionHeader.classList.add('hidden');
+                } else {
+                    sectionHeader.classList.remove('hidden');
+                    sectionTitle.textContent = sectionTitles[targetId] || '';
+                }
+            };
+            
+            initKnowledgeTabs();
+            initInspiration();
+            initDisorders();
+            initInterventions();
+            initDirectory();
+            initGuide();
+            initCosts();
+            initSurvey();
+            navigateToSection('home');
+        }
+
+        initializeApp();
+    });
+    </script>
+</body>
+</html>

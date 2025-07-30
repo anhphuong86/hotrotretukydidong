@@ -103,6 +103,28 @@
         .story-tab:not(.active) { background-color: #E5E7EB; color: #374151; }
         .story-content { display: none; }
         .story-content.active { display: grid; animation: fadeIn 0.5s; }
+        
+        /* Toast Notification */
+        .toast {
+            visibility: hidden;
+            min-width: 250px;
+            background-color: #333;
+            color: #fff;
+            text-align: center;
+            border-radius: 8px;
+            padding: 16px;
+            position: fixed;
+            z-index: 100;
+            left: 50%;
+            transform: translateX(-50%);
+            bottom: 80px; /* Position above bottom nav */
+            opacity: 0;
+            transition: opacity 0.3s, visibility 0.3s, bottom 0.3s;
+        }
+        .toast.show {
+            visibility: visible;
+            opacity: 1;
+        }
     </style>
 </head>
 <body class="antialiased">
@@ -220,6 +242,8 @@
             </section>
     </main>
 
+    <div id="toast" class="toast"></div>
+
     <nav class="bottom-nav fixed bottom-0 left-0 right-0 bg-white/95 backdrop-blur-sm border-t border-gray-200 no-print">
         <ul class="flex justify-around items-center h-16">
             <li><a href="#home" class="nav-link flex items-center active" data-title="Vòng Tay Yêu Thương"><svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path></svg><span class="nav-text">Trang Chủ</span></a></li>
@@ -329,7 +353,19 @@
                 { title: 'Điều trị bằng thuốc', principle: 'Sử dụng dược phẩm để quản lý các triệu chứng cốt lõi hoặc các rối loạn đi kèm.', goal: 'Kiểm soát triệu chứng để trẻ có thể tham gia và hưởng lợi từ các liệu pháp khác.', pros: 'Rất hiệu quả cho ADHD (ví dụ: Methylphenidate), giúp kiểm soát lo âu, hung hăng ở trẻ ASD hoặc giảm co cứng cơ ở trẻ Bại não (ví dụ: Baclofen).', cons: 'Không chữa khỏi bệnh, có thể có tác dụng phụ, cần được bác sĩ chuyên khoa chỉ định và theo dõi chặt chẽ.' }
             ],
             comprehensiveSurvey: {
-                partA: { title: 'Phần A: Thông Tin Chung', questions: [ { id: 'childName', label: 'Họ và tên trẻ', type: 'text', required: true }, { id: 'childDob', label: 'Ngày sinh của trẻ', type: 'date', required: true }, { id: 'childGender', label: 'Giới tính', type: 'select', options: ['Nam', 'Nữ', 'Khác'], required: true }, { id: 'parentName', label: 'Họ tên cha/mẹ/người giám hộ', type: 'text', required: true }, { id: 'parentContact', label: 'Số điện thoại liên hệ', type: 'tel', required: true }, { id: 'mainConcern', label: 'Mối lo ngại chính của gia đình về trẻ là gì? (Có thể chọn nhiều)', type: 'checkbox', required: true, options: ['Chậm nói hoặc các vấn đề ngôn ngữ', 'Khó khăn trong giao tiếp, tương tác xã hội', 'Kém tập trung, hiếu động quá mức', 'Các hành vi bất thường, lặp đi lặp lại', 'Vấn đề về vận động, đi lại', 'Khó khăn trong học tập', 'Khó khăn về ăn uống, giấc ngủ', 'Hay cáu gắt, ăn vạ'] } ] },
+                partA: { 
+                    title: 'Phần A: Thông Tin Chung & Thể Chất', 
+                    questions: [ 
+                        { id: 'childName', label: 'Họ và tên trẻ', type: 'text', required: true }, 
+                        { id: 'childDob', label: 'Ngày sinh của trẻ', type: 'date', required: true }, 
+                        { id: 'childGender', label: 'Giới tính', type: 'select', options: ['Nam', 'Nữ', 'Khác'], required: true },
+                        { id: 'childHeight', label: 'Chiều cao (cm)', type: 'number', required: true },
+                        { id: 'childWeight', label: 'Cân nặng (kg)', type: 'number', required: true },
+                        { id: 'parentName', label: 'Họ tên cha/mẹ/người giám hộ', type: 'text', required: true }, 
+                        { id: 'parentContact', label: 'Số điện thoại liên hệ', type: 'tel', required: true }, 
+                        { id: 'mainConcern', label: 'Mối lo ngại chính của gia đình về trẻ là gì? (Có thể chọn nhiều)', type: 'checkbox', required: true, options: ['Chậm nói hoặc các vấn đề ngôn ngữ', 'Khó khăn trong giao tiếp, tương tác xã hội', 'Kém tập trung, hiếu động quá mức', 'Các hành vi bất thường, lặp đi lặp lại', 'Vấn đề về vận động, đi lại', 'Khó khăn trong học tập', 'Khó khăn về ăn uống, giấc ngủ', 'Hay cáu gắt, ăn vạ'] } 
+                    ] 
+                },
                 partB: { title: 'Phần B: Lịch Sử Phát Triển & Sức Khỏe', questions: [ { id: 'pregnancyIssues', label: 'Trong quá trình mang thai, mẹ có gặp vấn đề nào sau đây không?', type: 'checkbox', options: ['Mắc bệnh (tiểu đường, cao huyết áp, nhiễm trùng)', 'Căng thẳng/stress nặng kéo dài', 'Sử dụng thuốc (không theo chỉ định)', 'Tiếp xúc hóa chất/môi trường độc hại', 'Không có vấn đề gì đặc biệt'] }, { id: 'birthIssues', label: 'Quá trình sinh nở có gì bất thường không?', type: 'checkbox', options: ['Sinh non (trước 37 tuần)', 'Nhẹ cân khi sinh (dưới 2.5kg)', 'Bị ngạt khi sinh', 'Vàng da nhân não', 'Phải can thiệp sản khoa (forceps, hút)', 'Không có vấn đề gì đặc biệt'] }, { id: 'healthHistory', label: 'Trẻ có tiền sử bệnh tật nào đáng chú ý không?', type: 'checkbox', options: ['Co giật/Động kinh', 'Viêm màng não/Viêm não', 'Chấn thương đầu nặng', 'Dị ứng nặng hoặc hen suyễn', 'Các bệnh mãn tính khác', 'Không có tiền sử bệnh nặng'] }, { id: 'milestone_motor', label: 'Phát triển vận động của trẻ:', type: 'radio', options: ['Bình thường, đạt các mốc đúng hạn', 'Có vẻ hơi chậm hơn so với bạn bè', 'Chậm rõ rệt (ví dụ: sau 18 tháng mới biết đi)', 'Rất chậm, có các cử động bất thường'] }, { id: 'milestone_speech', label: 'Phát triển ngôn ngữ của trẻ:', type: 'radio', options: ['Bình thường, nói câu dài phù hợp lứa tuổi', 'Nói được từ đơn nhưng chậm nói câu', 'Chỉ nói được vài từ đơn, vốn từ rất hạn chế', 'Chưa nói hoặc chỉ phát ra âm thanh vô nghĩa'] } ] },
                 partC: { title: 'Phần C: Thói Quen & Môi Trường Sống', questions: [ { id: 'eatingHabits', label: 'Thói quen ăn uống của trẻ:', type: 'radio', options: ['Ăn uống đa dạng, dễ dàng', 'Hơi kén ăn nhưng vẫn đủ chất', 'Rất kén ăn, chỉ ăn một vài món nhất định', 'Gặp khó khăn khi nhai/nuốt hoặc các vấn đề khác'] }, { id: 'sleepingHabits', label: 'Giấc ngủ của trẻ:', type: 'radio', options: ['Ngủ ngoan, đúng giờ, đủ giấc', 'Thỉnh thoảng khó ngủ hoặc hay tỉnh giấc', 'Thường xuyên khó đi vào giấc ngủ hoặc ngủ không sâu', 'Rối loạn giấc ngủ nặng'] }, { id: 'playingHabits', label: 'Cách chơi của trẻ:', type: 'radio', options: ['Chơi tương tác, sáng tạo, phù hợp lứa tuổi', 'Thích chơi một mình nhưng vẫn có thể chơi cùng bạn', 'Chỉ thích chơi một mình, không quan tâm người khác', 'Chơi một cách bất thường, lặp đi lặp lại (VD: chỉ xoay bánh xe)'] }, { id: 'socialInteraction', label: 'Tương tác xã hội của trẻ:', type: 'radio', options: ['Chủ động, vui vẻ tương tác với mọi người', 'Hơi nhút nhát nhưng vẫn phản ứng khi được hỏi', 'Thường lảng tránh, không đáp lại khi gọi tên', 'Hoàn toàn không quan tâm đến người khác'] } ] },
                 partD: { title: 'Phần D: Lịch Sử Sức Khỏe Gia Đình', questions: [ { id: 'familyHistory', label: 'Trong gia đình (ông bà, cha mẹ, anh chị em), có ai từng được chẩn đoán hoặc có biểu hiện của các vấn đề sau không?', type: 'checkbox', options: ['Rối loạn phổ tự kỷ (ASD)', 'Tăng động giảm chú ý (ADHD)', 'Chậm phát triển trí tuệ/khó khăn học tập', 'Rối loạn lo âu/Trầm cảm/Rối loạn lưỡng cực', 'Động kinh', 'Các rối loạn thần kinh/di truyền khác', 'Không có tiền sử đáng chú ý trong gia đình'] } ] },
@@ -562,6 +598,7 @@
                         html += `<div><label for="${id}" class="font-semibold text-gray-700 block mb-2">${questionText}${isRequired ? '<span class="text-red-500 ml-1">*</span>' : ''}</label>`;
                         switch (q.type) {
                             case 'text': case 'date': case 'tel': html += `<input type="${q.type}" id="${id}" name="${id}" class="form-input" ${isRequired ? 'required' : ''}>`; break;
+                            case 'number': html += `<input type="number" inputmode="decimal" id="${id}" name="${id}" class="form-input" ${isRequired ? 'required' : ''} placeholder="${q.label.includes('cao') ? 'Ví dụ: 110' : 'Ví dụ: 18.5'}">`; break;
                             case 'select': html += `<select id="${id}" name="${id}" class="form-select" ${isRequired ? 'required' : ''}><option value="">-- Chọn --</option>${q.options.map(opt => `<option value="${opt}">${opt}</option>`).join('')}</select>`; break;
                             case 'checkbox': html += `<div class="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-2" data-required="${isRequired}" data-group-name="${id}">${q.options.map(opt => `<label class="flex items-center space-x-2 p-3 bg-gray-50 rounded-md border cursor-pointer hover:bg-gray-100 has-[:checked]:bg-blue-50 has-[:checked]:border-primary"><input type="checkbox" name="${id}" value="${opt}" class="form-checkbox text-primary focus:ring-primary"><span>${opt}</span></label>`).join('')}</div>`; break;
                             case 'radio': html += `<div class="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-2">${q.options.map(opt => `<label class="flex items-center space-x-2 p-3 bg-gray-50 rounded-md border cursor-pointer hover:bg-gray-100 has-[:checked]:bg-blue-50 has-[:checked]:border-primary"><input type="radio" name="${id}" value="${opt}" ${isRequired ? 'required' : ''} class="form-radio text-primary focus:ring-primary"><span>${opt}</span></label>`).join('')}</div>`; break;
@@ -634,11 +671,40 @@
                 const formData = new FormData(surveyForm);
                 const resultsContainer = document.getElementById('survey-results');
                 const report = getDetailedAnalysis(formData);
-                let summaryHTML = `<div id="survey-results-printable" class="card p-6 md:p-10"><h3 class="text-2xl font-bold text-primary mb-2 text-center">Báo Cáo Phân Tích Tổng Hợp</h3><p class="text-center text-gray-500 mb-8">Dành cho ${formData.get('childName') || 'trẻ'}, sinh ngày ${formData.get('childDob') || 'chưa cung cấp'}.</p><div class="space-y-8">${report.summary}${report.detailedAnalysis}${report.discussionPoints}${report.movement}${report.diet}</div><p class="text-xs text-center mt-10 text-gray-400">Lưu ý: Báo cáo này được tạo tự động và chỉ mang tính chất tham khảo, không thay thế cho chẩn đoán y tế chuyên nghiệp.</p></div><div class="mt-8 text-center no-print"><button id="print-report-btn" class="bg-primary text-white font-bold py-3 px-6 rounded-lg hover:bg-opacity-80 transition-colors shadow-lg">In Báo Cáo (PDF)</button></div>`;
-                resultsContainer.innerHTML = summaryHTML;
+                let reportHTML = `<div id="survey-results-content" class="card p-6 md:p-10"><h3 class="text-2xl font-bold text-primary mb-2 text-center">Báo Cáo Phân Tích Tổng Hợp</h3><p class="text-center text-gray-500 mb-8">Dành cho ${formData.get('childName') || 'trẻ'}, sinh ngày ${formData.get('childDob') || 'chưa cung cấp'}.</p><div class="space-y-8">${report.summary}${report.physicalHealth}${report.detailedAnalysis}${report.discussionPoints}${report.movement}${report.diet}</div><p class="text-xs text-center mt-10 text-gray-400">Lưu ý: Báo cáo này được tạo tự động và chỉ mang tính chất tham khảo, không thay thế cho chẩn đoán y tế chuyên nghiệp.</p></div><div class="mt-8 text-center no-print"><button id="share-report-btn" class="bg-primary text-white font-bold py-3 px-6 rounded-lg hover:bg-opacity-80 transition-colors shadow-lg flex items-center justify-center mx-auto"><svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12s-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.367 2.684 3 3 0 00-5.367-2.684z"></path></svg>Chia Sẻ Báo Cáo</button></div>`;
+                resultsContainer.innerHTML = reportHTML;
                 resultsContainer.classList.remove('hidden');
                 resultsContainer.scrollIntoView({ behavior: 'smooth' });
-                document.getElementById('print-report-btn').addEventListener('click', () => { window.print(); });
+                
+                document.getElementById('share-report-btn').addEventListener('click', () => {
+                    const reportContentElement = document.getElementById('survey-results-content');
+                    const reportText = reportContentElement.innerText;
+                    const reportTitle = `Báo Cáo Phân Tích Sức Khỏe cho ${formData.get('childName') || 'bé'}`;
+
+                    if (navigator.share) {
+                        navigator.share({
+                            title: reportTitle,
+                            text: reportText,
+                        }).catch(console.error);
+                    } else {
+                        // Fallback for desktop browsers
+                        const textArea = document.createElement("textarea");
+                        textArea.value = reportText;
+                        textArea.style.position = "fixed"; 
+                        textArea.style.top = "-9999px";
+                        document.body.appendChild(textArea);
+                        textArea.focus();
+                        textArea.select();
+                        try {
+                            document.execCommand('copy');
+                            showToast('Đã sao chép báo cáo vào bộ nhớ tạm!');
+                        } catch (err) {
+                            console.error('Lỗi sao chép: ', err);
+                            showToast('Lỗi! Không thể sao chép tự động.');
+                        }
+                        document.body.removeChild(textArea);
+                    }
+                });
             });
         }
         
@@ -646,29 +712,67 @@
         function getDetailedAnalysis(formData) {
             const ageInMonths = calculateAgeInMonths(formData.get('childDob'));
             let summaryHTML = `<div><h4 class="text-lg font-bold text-primary mb-4 border-b pb-2">1. Tổng hợp Thông tin Ban đầu</h4><div class="bg-secondary p-4 rounded-lg space-y-2 text-sm"><p><strong>Thông tin trẻ:</strong> ${formData.get('childName') || 'Chưa cung cấp'}, ${ageInMonths ? `khoảng ${ageInMonths} tháng tuổi` : 'chưa rõ tuổi'}.</p><p><strong>Mối lo ngại chính:</strong> ${formData.getAll('mainConcern').join(', ') || 'Chưa rõ'}</p><p><strong>Lịch sử thai kỳ & sinh nở:</strong> ${formData.getAll('pregnancyIssues').join(', ') || 'Bình thường'}; ${formData.getAll('birthIssues').join(', ') || 'Bình thường'}</p><p><strong>Vận động:</strong> ${formData.get('milestone_motor') || 'Chưa rõ'}</p><p><strong>Ngôn ngữ:</strong> ${formData.get('milestone_speech') || 'Chưa rõ'}</p></div></div>`;
+            
+            // Physical Health Analysis
+            const height = parseFloat(formData.get('childHeight')) || 0;
+            const weight = parseFloat(formData.get('childWeight')) || 0;
+            let physicalHealthHTML = '<div><h4 class="text-lg font-bold text-primary mb-4 border-b pb-2">2. Phân tích Sức khỏe Thể chất</h4><div class="bg-secondary p-4 rounded-lg space-y-4 text-sm">';
+            if (height > 0 && weight > 0) {
+                const bmi = weight / ((height / 100) * (height / 100));
+                let bmiStatus = '';
+                let bmiAdvice = '';
+                // Simplified BMI categories for children - NOT a medical diagnosis
+                if (bmi < 14.5) {
+                    bmiStatus = `<span class="font-bold text-blue-600">Nhẹ cân</span>`;
+                    bmiAdvice = 'Bé có thể cần bổ sung thêm dinh dưỡng. Hãy tập trung vào các bữa ăn giàu năng lượng, đủ chất đạm, tinh bột, chất béo tốt và vitamin. Tham khảo ý kiến bác sĩ dinh dưỡng để có thực đơn phù hợp nhất.';
+                } else if (bmi >= 14.5 && bmi < 18) {
+                    bmiStatus = `<span class="font-bold text-green-600">Cân đối</span>`;
+                    bmiAdvice = 'Bé có thể trạng rất tốt. Hãy tiếp tục duy trì một chế độ ăn uống đa dạng, cân bằng và khuyến khích bé tham gia các hoạt động thể chất vui nhộn hàng ngày để phát triển toàn diện.';
+                } else if (bmi >= 18 && bmi < 21) {
+                    bmiStatus = `<span class="font-bold text-yellow-600">Thừa cân</span>`;
+                    bmiAdvice = 'Bé có nguy cơ béo phì. Gia đình nên tăng cường rau xanh, hoa quả, hạn chế đồ ngọt và thức ăn nhanh. Khuyến khích bé vận động nhiều hơn qua các trò chơi ngoài trời như chạy nhảy, đá bóng, bơi lội.';
+                } else {
+                    bmiStatus = `<span class="font-bold text-red-600">Béo phì</span>`;
+                    bmiAdvice = 'Tình trạng cân nặng của bé cần được quan tâm đặc biệt. Rất khuyến khích gia đình tham vấn bác sĩ dinh dưỡng để có kế hoạch ăn uống và vận động khoa học, giúp bé trở về mức cân nặng khỏe mạnh.';
+                }
+                physicalHealthHTML += `<div><p><strong>Chỉ số BMI (tham khảo):</strong> ${bmi.toFixed(1)} - Tình trạng: ${bmiStatus}</p><p class="mt-2"><strong>Gợi ý chung:</strong> ${bmiAdvice}</p><p class="text-xs mt-2 text-gray-500">Lưu ý: Đánh giá BMI ở trẻ em rất phức tạp và phụ thuộc vào biểu đồ tăng trưởng theo độ tuổi và giới tính. Kết quả này chỉ mang tính tham khảo ban đầu. Vui lòng tham vấn bác sĩ nhi khoa để có đánh giá chính xác nhất.</p></div>`;
+            } else {
+                physicalHealthHTML += '<p>Chưa đủ thông tin về chiều cao và cân nặng để đưa ra phân tích thể chất.</p>';
+            }
+            physicalHealthHTML += '</div></div>';
+
             let scores = { asd_social: 0, asd_repetitive: 0, adhd_inattention: 0, adhd_hyperactivity: 0 };
             const maxScores = { asd_social: 9, asd_repetitive: 9, adhd_inattention: 9, adhd_hyperactivity: 9 };
             appData.comprehensiveSurvey.partE.questions.forEach((q, index) => { scores[q.category] += parseInt(formData.get(`partE-q${index}`) || 0); });
-            let detailedAnalysisHTML = `<div><h4 class="text-lg font-bold text-primary mb-4 border-b pb-2">2. Phân tích Chi tiết các Lĩnh vực</h4><div class="bg-secondary p-4 rounded-lg space-y-4 text-sm"><div><p class="font-semibold">Giao tiếp & Tương tác Xã hội: <span class="font-bold">${scores.asd_social}/${maxScores.asd_social}</span></p><p class="text-gray-600"><b>Góc nhìn chuyên gia:</b> Điểm số này cho thấy trẻ có thể đang gặp khó khăn trong việc 'đọc' các tín hiệu xã hội (ánh mắt, nét mặt), do vùng não xử lý thông tin xã hội phát triển khác biệt.</p></div><div><p class="font-semibold">Hành vi & Giác quan: <span class="font-bold">${scores.asd_repetitive}/${maxScores.asd_repetitive}</span></p><p class="text-gray-600"><b>Góc nhìn chuyên gia:</b> Các hành vi lặp lại thường là cách trẻ tự trấn an khi hệ thần kinh bị quá tải. Nhu cầu về sự quen thuộc giúp trẻ cảm thấy an toàn trong một thế giới phức tạp.</p></div><div><p class="font-semibold">Sự tập trung & Chú ý: <span class="font-bold">${scores.adhd_inattention}/${maxScores.adhd_inattention}</span></p><p class="text-gray-600"><b>Góc nhìn chuyên gia:</b> Phản ánh khó khăn trong 'chức năng điều hành' của não bộ - khả năng lọc bỏ yếu tố gây nhiễu. Đây là một thách thức về sinh học thần kinh, không phải sự lười biếng.</p></div><div><p class="font-semibold">Năng động & Kiểm soát Xung động: <span class="font-bold">${scores.adhd_hyperactivity}/${maxScores.adhd_hyperactivity}</span></p><p class="text-gray-600"><b>Góc nhìn chuyên gia:</b> Não bộ của trẻ có thể gặp khó khăn trong việc 'phanh' lại các hành động bột phát. Nhu cầu vận động liên tục là một biểu hiện của việc não bộ đang tự điều chỉnh.</p></div></div></div>`;
-            let discussionPointsHTML = '<div><h4 class="text-lg font-bold text-primary mb-4 border-b pb-2">3. Gợi ý từ Chuyên gia</h4><div class="bg-secondary p-4 rounded-lg"><ul class="list-disc list-inside space-y-3 text-sm">';
+            let detailedAnalysisHTML = `<div><h4 class="text-lg font-bold text-primary mb-4 border-b pb-2">3. Phân tích Phát triển Tâm lý - Hành vi</h4><div class="bg-secondary p-4 rounded-lg space-y-4 text-sm"><div><p class="font-semibold">Giao tiếp & Tương tác Xã hội: <span class="font-bold">${scores.asd_social}/${maxScores.asd_social}</span></p><p class="text-gray-600"><b>Góc nhìn chuyên gia:</b> Điểm số này cho thấy trẻ có thể đang gặp khó khăn trong việc 'đọc' các tín hiệu xã hội (ánh mắt, nét mặt), do vùng não xử lý thông tin xã hội phát triển khác biệt.</p></div><div><p class="font-semibold">Hành vi & Giác quan: <span class="font-bold">${scores.asd_repetitive}/${maxScores.asd_repetitive}</span></p><p class="text-gray-600"><b>Góc nhìn chuyên gia:</b> Các hành vi lặp lại thường là cách trẻ tự trấn an khi hệ thần kinh bị quá tải. Nhu cầu về sự quen thuộc giúp trẻ cảm thấy an toàn trong một thế giới phức tạp.</p></div><div><p class="font-semibold">Sự tập trung & Chú ý: <span class="font-bold">${scores.adhd_inattention}/${maxScores.adhd_inattention}</span></p><p class="text-gray-600"><b>Góc nhìn chuyên gia:</b> Phản ánh khó khăn trong 'chức năng điều hành' của não bộ - khả năng lọc bỏ yếu tố gây nhiễu. Đây là một thách thức về sinh học thần kinh, không phải sự lười biếng.</p></div><div><p class="font-semibold">Năng động & Kiểm soát Xung động: <span class="font-bold">${scores.adhd_hyperactivity}/${maxScores.adhd_hyperactivity}</span></p><p class="text-gray-600"><b>Góc nhìn chuyên gia:</b> Não bộ của trẻ có thể gặp khó khăn trong việc 'phanh' lại các hành động bột phát. Nhu cầu vận động liên tục là một biểu hiện của việc não bộ đang tự điều chỉnh.</p></div></div></div>`;
+            let discussionPointsHTML = '<div><h4 class="text-lg font-bold text-primary mb-4 border-b pb-2">4. Các Bước Tiếp Theo Được Khuyến Nghị</h4><div class="bg-secondary p-4 rounded-lg"><ul class="list-disc list-inside space-y-3 text-sm">';
             if (scores.asd_social > 4 || scores.asd_repetitive > 4) discussionPointsHTML += '<li><strong class="text-primary">Đánh giá ASD:</strong> Các biểu hiện về giao tiếp và hành vi cho thấy gia đình nên tiến hành một buổi đánh giá chính thức với các công cụ chuẩn quốc tế (ADOS-2, CARS) để xây dựng lộ trình can thiệp hiệu quả.</li>';
             if (scores.adhd_inattention > 5 || scores.adhd_hyperactivity > 5) discussionPointsHTML += '<li><strong class="text-primary">Đánh giá ADHD:</strong> Các biểu hiện về tập trung và hiếu động là rất đáng chú ý. Nên sử dụng các thang đánh giá (Vanderbilt, Conners) để phân biệt giữa tính cách hiếu động và dấu hiệu ADHD.</li>';
             if (formData.get('milestone_motor')?.includes('Chậm')) discussionPointsHTML += `<li><strong class="text-primary">Đánh giá Vận động:</strong> Sự chậm trễ trong các mốc vận động cần được chuyên gia Vật lý trị liệu đánh giá sớm để có các bài tập hỗ trợ kịp thời.</li>`;
             if (formData.get('milestone_speech')?.includes('Chậm') || formData.get('milestone_speech')?.includes('Chưa nói')) discussionPointsHTML += `<li><strong class="text-primary">Đánh giá Ngôn ngữ:</strong> Tình trạng này cần được chuyên gia Ngôn ngữ trị liệu đánh giá sâu hơn về khả năng hiểu và diễn đạt của trẻ.</li>`;
             if (discussionPointsHTML.length <= 90) discussionPointsHTML += '<li>Dựa trên thông tin đã cung cấp, chưa có mô hình dấu hiệu nào nổi bật rõ rệt. Cha mẹ nên trình bày tất cả các mối lo ngại với bác sĩ để được tư vấn và theo dõi sát sao.</li>';
             discussionPointsHTML += '</ul></div></div>';
-            let movementHTML = '<div><h4 class="text-lg font-bold text-primary mb-4 border-b pb-2">4. Gợi ý về Vận động</h4><div class="bg-secondary p-4 rounded-lg"><ul class="list-disc list-inside space-y-2 text-sm">';
+            let movementHTML = '<div><h4 class="text-lg font-bold text-primary mb-4 border-b pb-2">5. Gợi ý về Vận động</h4><div class="bg-secondary p-4 rounded-lg"><ul class="list-disc list-inside space-y-2 text-sm">';
             if (scores.adhd_hyperactivity > 5) movementHTML += '<li><strong>Giải tỏa năng lượng:</strong> Các môn thể thao cường độ cao (bóng đá, bơi lội) giúp trẻ giải phóng năng lượng dư thừa và sản sinh dopamine, tốt cho sự tập trung.</li>';
             if (scores.asd_repetitive > 4) movementHTML += '<li><strong>Điều hòa cảm giác:</strong> Các trò chơi (xích đu, nhà bóng, chơi với cát/nước) giúp "lấp đầy" nhu cầu cảm giác của trẻ, giảm các hành vi tự kích thích.</li>';
             movementHTML += '<li><strong>Vận động tinh:</strong> Chơi với đất nặn, xé giấy, xâu chuỗi hạt giúp tăng cường sự khéo léo của đôi tay, là nền tảng cho việc cầm bút và các kỹ năng tự phục vụ.</li>';
             movementHTML += '</ul></div></div>';
-            let dietHTML = '<div><h4 class="text-lg font-bold text-primary mb-4 border-b pb-2">5. Gợi ý về Dinh dưỡng</h4><div class="bg-secondary p-4 rounded-lg"><ul class="list-disc list-inside space-y-2 text-sm">';
+            let dietHTML = '<div><h4 class="text-lg font-bold text-primary mb-4 border-b pb-2">6. Gợi ý về Dinh dưỡng</h4><div class="bg-secondary p-4 rounded-lg"><ul class="list-disc list-inside space-y-2 text-sm">';
             dietHTML += '<li><strong>Chế độ ăn cân bằng:</strong> Đảm bảo trẻ nhận đủ các nhóm chất để não bộ có đủ năng lượng hoạt động tối ưu.</li>';
             dietHTML += '<li><strong>Bổ sung Omega-3:</strong> Các loại cá béo (cá hồi) và các loại hạt (óc chó) rất tốt cho chức năng não bộ, hỗ trợ khả năng tập trung.</li>';
             if (formData.get('eatingHabits')?.includes('kén ăn')) dietHTML += '<li><strong>Giải quyết kén ăn:</strong> Giới thiệu món ăn mới một cách kiên nhẫn, cho trẻ tham gia vào quá trình chuẩn bị. Thử các cách chế biến khác nhau (xay, nghiền, hấp, nướng).</li>';
             dietHTML += '<li><strong>Hạn chế đường & phụ gia:</strong> Giảm thiểu đồ ngọt, nước có ga và thực phẩm chế biến sẵn có thể ảnh hưởng đến hành vi và sự tập trung của trẻ.</li>';
             dietHTML += '</ul></div></div>';
-            return { summary: summaryHTML, detailedAnalysis: detailedAnalysisHTML, discussionPoints: discussionPointsHTML, movement: movementHTML, diet: dietHTML };
+            return { summary: summaryHTML, physicalHealth: physicalHealthHTML, detailedAnalysis: detailedAnalysisHTML, discussionPoints: discussionPointsHTML, movement: movementHTML, diet: dietHTML };
+        }
+        
+        function showToast(message) {
+            const toast = document.getElementById('toast');
+            toast.textContent = message;
+            toast.classList.add('show');
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 3000);
         }
 
         // --- MASTER INITIALIZATION ---
